@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GLOBALNAV — 分段行程规划</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav style="padding:0.5rem 2rem;display:flex;gap:1rem">
+    <a href="/follower" style="color:#3b82f6">Instruction Follower →</a>
+    <a href="/annotate" style="color:#3b82f6">Annotation Tool →</a>
+  </nav>
+  <header>
+    <h1>GLOBALNAV</h1>
+    <p class="subtitle">分段模块化行程规划 · 环境决定交通方式 · LLM 仅解析意图</p>
+  </header>
+
+  <section class="search-panel">
+    <div class="search-row">
+      <input id="instruction" type="text"
+        placeholder="例如：我在UTS，要去四川九寨沟"
+        value="我在UTS，要去四川九寨沟" />
+      <button id="planBtn" type="button">规划行程</button>
+    </div>
+    <p id="status" class="status"></p>
+  </section>
+
+  <section id="summary" class="summary hidden">
+    <div class="route-header">
+      <span id="routeLabel"></span>
+    </div>
+    <div class="total-bar">
+      <span class="total-label">预计总耗时</span>
+      <span id="totalTime" class="total-time">—</span>
+      <span id="totalKm" class="total-km"></span>
+    </div>
+  </section>
+
+  <main id="segments"></main>
+
+  <div id="clarifyModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>需要确认</h3>
+      <p id="clarifyQuestion"></p>
+      <div id="clarifyOptions"></div>
+      <input id="clarifyInput" type="text" class="hidden" placeholder="请输入..." />
+      <button id="clarifySubmit">确认</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "count": 1,
+  "examples": [
+    {
+      "decompose_aligned": true,
+      "destination_query": "Sydney Opera House, Sydney, Australia",
+      "id": "gf_local_sydney_hotel_to_landmark",
+      "origin_query": "Hyatt Regency Sydney, Sydney, Australia",
+      "segment_switch_count": 0,
+      "steps": 2,
+      "streetview_summary": {
+        "coverage_rate": 1.0,
+        "google_pano_step_count": 2,
+        "ground_step_count": 2,
+        "unique_google_pano_ids": 1
+      }
+    }
+  ],
+  "streetview": {
+    "coverage_rate": 1.0,
+    "google_pano_steps": 2,
+    "ground_steps": 2,
+    "unique_google_pano_ids": 1
+  },
+  "total_steps": 2
+}

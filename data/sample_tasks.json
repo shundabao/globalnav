@@ -1,0 +1,29 @@
+[
+  {
+    "id": "uts_jiuzhaigou_multimodal",
+    "instruction": "我在UTS，要去四川九寨沟",
+    "expect_clarification": false,
+    "expect_legs_min": 3
+  },
+  {
+    "id": "fly_beijing_tokyo",
+    "instruction": "Fly from Beijing to Tokyo",
+    "expect_clarification": false,
+    "expect_legs_min": 1
+  },
+  {
+    "id": "ambiguous_airport",
+    "instruction": "Take me to the airport from London",
+    "expect_clarification": true
+  },
+  {
+    "id": "drive_sf_la",
+    "instruction": "Drive from San Francisco to Los Angeles",
+    "expect_clarification": false
+  },
+  {
+    "id": "maritime_shanghai_singapore",
+    "instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+    "expect_clarification": false
+  }
+]

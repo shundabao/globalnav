@@ -1,0 +1,42 @@
+{
+  "by_split": {
+    "hybrid_follower": 75,
+    "intent_clarification": 200,
+    "planning_feasibility": 150,
+    "route_option_generation": 50,
+    "stress_test": 25
+  },
+  "example_count": 500,
+  "failure_count": 0,
+  "failures": [],
+  "generation": {
+    "count": 500,
+    "note": "Pilot examples are generated from curated global seed places and machine-validated against schema/OpenFlights where applicable. They are ready for human annotation review in the benchmark UI.",
+    "seed": 7
+  },
+  "schema_version": "0.2",
+  "summary": {
+    "avg_instruction_words": 15.34,
+    "by_macro_region_mentions": {
+      "Africa": 122,
+      "Asia": 123,
+      "Europe": 145,
+      "Middle East": 147,
+      "North America": 144,
+      "Oceania": 80,
+      "South America": 76
+    },
+    "by_split": {
+      "hybrid_follower": 75,
+      "intent_clarification": 200,
+      "planning_feasibility": 150,
+      "route_option_generation": 50,
+      "stress_test": 25
+    },
+    "count": 500,
+    "direct_flight_examples": 146,
+    "max_city_pair_distance_km": 18542.0,
+    "one_stop_or_estimated_flight_examples": 129
+  },
+  "valid_count": 500
+}

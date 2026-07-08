@@ -1,0 +1,17 @@
+[
+  {
+    "id": "uts_opera_local",
+    "instruction": "I am at UTS facing Broadway. Walk to Sydney Opera House along the harbour.",
+    "rule_based_ok": true
+  },
+  {
+    "id": "uts_liverpool_global",
+    "instruction": "我在悉尼科技大学UTS，面朝乔治街。先走到中央车站，再前往悉尼机场。从悉尼坐飞机经迪拜到曼彻斯特，出机场后坐火车到利物浦，最后走到利物浦大学。",
+    "rule_based_ok": true
+  },
+  {
+    "id": "uts_nyc",
+    "instruction": "Starting at UTS Sydney, get a taxi to the airport, fly to New York, take the train to Times Square.",
+    "rule_based_ok": true
+  }
+]

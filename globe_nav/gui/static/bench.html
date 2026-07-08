@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GlobNav-Bench Annotation</title>
+  <link rel="stylesheet" href="/bench.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">GLOBALNAV</p>
+        <h1>GlobNav-Bench Annotation</h1>
+        <p class="subtitle">Review globally sampled route skeletons, intent labels, clarification labels, and hybrid follower oracle actions.</p>
+      </div>
+      <a class="nav-link" href="/">Planner</a>
+    </section>
+
+    <section class="toolbar">
+      <label>
+        Split
+        <select id="splitFilter">
+          <option value="">All splits</option>
+          <option value="planning_feasibility">Planning feasibility</option>
+          <option value="intent_clarification">Intent clarification</option>
+          <option value="route_option_generation">Route-option generation</option>
+          <option value="hybrid_follower">Hybrid follower</option>
+          <option value="stress_test">Stress tests</option>
+        </select>
+      </label>
+      <label>
+        Search
+        <input id="searchBox" type="search" placeholder="id, instruction, category">
+      </label>
+      <button id="reloadBtn">Load</button>
+      <span id="countLabel"></span>
+    </section>
+
+    <section class="layout">
+      <aside class="list-card">
+        <div id="exampleList" class="example-list"></div>
+        <div class="pager">
+          <button id="prevBtn">Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+      </aside>
+
+      <section class="detail-card">
+        <div id="emptyState" class="empty">Select an example to review.</div>
+        <article id="detail" class="detail hidden">
+          <div class="detail-head">
+            <div>
+              <p id="detailSplit" class="tag"></p>
+              <h2 id="detailId"></h2>
+            </div>
+            <p id="detailLang" class="lang"></p>
+          </div>
+
+          <h3>Instruction</h3>
+          <p id="instructionText" class="instruction"></p>
+
+          <div class="grid">
+            <section>
+              <h3>Gold Intent</h3>
+              <pre id="intentJson"></pre>
+            </section>
+            <section>
+              <h3>Clarification</h3>
+              <pre id="clarificationJson"></pre>
+            </section>
+          </div>
+
+          <h3>Route Annotation</h3>
+          <div id="segments" class="segments"></div>
+
+          <h3>Follower Annotation</h3>
+          <pre id="followerJson"></pre>
+
+          <form id="reviewForm" class="review">
+            <h3>Human Review</h3>
+            <label>
+              Annotator
+              <input id="annotator" placeholder="name or initials">
+            </label>
+            <label>
+              Review status
+              <select id="reviewStatus">
+                <option value="approved">Approved</option>
+                <option value="needs_revision">Needs revision</option>
+                <option value="reject">Reject</option>
+              </select>
+            </label>
+            <div class="checks">
+              <label><input id="endpointOk" type="checkbox"> Endpoint OK</label>
+              <label><input id="routeOk" type="checkbox"> Route OK</label>
+              <label><input id="clarificationOk" type="checkbox"> Clarification OK</label>
+              <label><input id="followerOracleOk" type="checkbox"> Follower oracle OK</label>
+            </div>
+            <label>
+              Rewritten natural instruction
+              <textarea id="rewrittenInstruction" rows="3"></textarea>
+            </label>
+            <label>
+              Procedural notes / co-driver corrections
+              <textarea id="proceduralNotes" rows="4"></textarea>
+            </label>
+            <label>
+              Comments
+              <textarea id="comments" rows="3"></textarea>
+            </label>
+            <button type="submit">Save Review</button>
+            <span id="saveStatus"></span>
+          </form>
+        </article>
+      </section>
+    </section>
+  </main>
+  <script src="/bench.js"></script>
+</body>
+</html>

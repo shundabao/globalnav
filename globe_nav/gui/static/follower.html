@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GLOBALNAV — Instruction Follower</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="follower.css" />
+</head>
+<body>
+  <div class="follower-shell">
+    <nav class="links">
+      <a href="/">← 分段规划</a>
+      <span>GLOBALNAV</span>
+    </nav>
+
+    <header class="follower-header">
+      <div>
+        <p class="eyebrow">Global multi-modal navigation</p>
+        <h1>Instruction Follower</h1>
+        <p class="subtitle">全球路线仿真</p>
+      </div>
+      <div class="header-metrics" aria-label="route totals">
+        <div>
+          <span>Total Time</span>
+          <strong>--:--</strong>
+        </div>
+        <div>
+          <span>Total Distance</span>
+          <strong>-- --</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="command-card">
+      <textarea id="instruction" rows="5">我在悉尼科技大学UTS，面朝乔治街。先走到悉尼机场，坐飞机到曼彻斯特，出机场后坐火车到利物浦，最后走到利物浦大学。</textarea>
+      <div class="ctrl-row">
+        <label><input type="checkbox" id="ruleBased" checked /> 规则策略</label>
+        <label><input type="checkbox" id="noLlm" /> 离线分解（无 LLM）</label>
+        <label><input type="checkbox" id="streetview" checked /> 街景图像</label>
+        <button id="prepareBtn" type="button">准备路线</button>
+      </div>
+      <div class="status-row">
+        <p id="svHint" class="sv-hint"></p>
+        <p id="status" class="status"></p>
+      </div>
+    </section>
+
+    <div class="follower-layout">
+      <section class="left-panel">
+        <div class="panel-heading">
+          <span>Route Options</span>
+          <small>Segment choices</small>
+        </div>
+
+        <div id="segmentOptions" class="segment-options hidden"></div>
+        <section id="meta" class="summary hidden"></section>
+      </section>
+
+      <section class="map-panel">
+        <div id="map" class="map-container"></div>
+      </section>
+
+      <aside class="right-panel">
+        <div id="svPanel" class="sv-panel">
+          <div class="panel-heading">
+            <span>Follower State</span>
+            <small>Current observation</small>
+          </div>
+          <div class="sv-frame">
+            <img id="svImage" alt="street view" />
+            <div id="svPlaceholder" class="sv-placeholder">
+              <span>Street View</span>
+              <p>准备路线后显示当前位置街景</p>
+            </div>
+          </div>
+          <div id="svMeta" class="sv-meta"></div>
+          <div id="obsSummary" class="obs-summary"></div>
+          <div class="actions-card">
+            <div class="panel-heading compact">
+              <span>Available Actions</span>
+            </div>
+            <div id="actionList" class="action-list">
+              <button type="button" disabled>Prepare route</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="playback" class="playback hidden">
+          <div class="play-ctrl">
+            <button id="stepBtn" type="button">单步 →</button>
+            <button id="playBtn" type="button">▶ 播放</button>
+            <span id="stepLabel">0 / 0</span>
+          </div>
+          <input type="range" id="scrubber" min="0" max="0" value="0" />
+          <div id="trace" class="trace"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="clarifyModal" class="clarify-modal hidden">
+    <div class="clarify-box">
+      <p id="clarifyQuestion"></p>
+      <div id="clarifyOptions"></div>
+      <input id="clarifyInput" type="text" class="hidden" placeholder="输入回答" />
+      <button id="clarifySubmit" type="button">确认</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="follower.js"></script>
+</body>
+</html>

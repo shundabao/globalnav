@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GLOBALNAV — Instruction Annotation</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/annotate.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <nav class="topbar">
+      <a href="/">分段规划</a>
+      <a href="/follower">Follower</a>
+      <a href="/bench">Bench Review</a>
+      <span>GLOBALNAV Annotation</span>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Route-grounded instruction dataset</p>
+        <h1>Instruction Annotation</h1>
+        <p class="subtitle">先固定环境路线，再逐节点写可选指令；空指令表示继续沿路线前进。</p>
+      </div>
+      <div class="status-card">
+        <span>Street View</span>
+        <strong id="streetviewState">checking</strong>
+      </div>
+    </header>
+
+    <section class="setup-card">
+      <div class="field-grid">
+        <label>
+          <span>Origin</span>
+          <input id="originInput" value="UTS" />
+        </label>
+        <label>
+          <span>Destination</span>
+          <input id="destinationInput" value="Sydney Opera House" />
+        </label>
+        <label>
+          <span>Annotator</span>
+          <input id="annotatorInput" placeholder="name or initials" />
+        </label>
+        <label>
+          <span>Node stride</span>
+          <input id="sampleEveryInput" type="number" min="1" max="20" value="1" />
+        </label>
+      </div>
+
+      <div class="control-row">
+        <label class="check"><input id="groundOnlyInput" type="checkbox" checked /> 只标注 walk/drive 街景节点</label>
+        <button id="randomBtn" type="button">随机本地起终点</button>
+        <button id="planBtn" type="button">生成路线选项</button>
+        <button id="startBtn" type="button" disabled>固定路线并开始标注</button>
+        <span id="setupStatus" class="status-text"></span>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <aside class="route-panel">
+        <div class="panel-title">
+          <span>Route Options</span>
+          <small id="routeSummary">No route yet</small>
+        </div>
+        <div id="segmentList" class="segment-list empty">生成路线后选择每一段的 ground truth option。</div>
+      </aside>
+
+      <section class="map-panel">
+        <div id="map"></div>
+      </section>
+
+      <aside class="annotation-panel">
+        <div class="panel-title">
+          <span>Node Annotation</span>
+          <small id="nodeCounter">0 / 0</small>
+        </div>
+
+        <div class="streetview-frame">
+          <img id="streetviewImage" alt="street view" />
+          <div id="streetviewPlaceholder" class="streetview-placeholder">
+            <span>Street View</span>
+            <p>固定路线后显示当前节点街景</p>
+          </div>
+        </div>
+
+        <div id="nodeMeta" class="node-meta"></div>
+
+        <label class="instruction-box">
+          <span>Instruction at this node</span>
+          <textarea id="instructionInput" rows="5" placeholder="可留空：表示继续沿当前路线前进"></textarea>
+        </label>
+
+        <label class="action-box">
+          <span>Oracle action</span>
+          <select id="actionSelect"></select>
+        </label>
+
+        <div class="nav-row">
+          <button id="prevNodeBtn" type="button">上一点</button>
+          <button id="nextNodeBtn" type="button">下一点</button>
+          <button id="saveBtn" type="button">保存 JSONL</button>
+        </div>
+        <p id="saveStatus" class="status-text"></p>
+      </aside>
+    </main>
+
+    <section class="node-strip">
+      <div class="panel-title">
+        <span>Nodes</span>
+        <small id="progressText">0 annotated</small>
+      </div>
+      <div id="nodeList" class="node-list empty">开始标注后这里会显示路线节点。</div>
+    </section>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/annotate.js"></script>
+</body>
+</html>

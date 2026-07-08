@@ -1,0 +1,181 @@
+\begin{thebibliography}{20}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Anderson et~al.(2018)Anderson, Wu, Teney, Bruce, Johnson,
+  Sünderhauf, Reid, Gould, and van~den Hengel}]{Anderson_2018_CVPR}
+Peter Anderson, Qi~Wu, Damien Teney, Jake Bruce, Mark Johnson, Niko
+  Sünderhauf, Ian Reid, Stephen Gould, and Anton van~den Hengel. 2018.
+\newblock Vision-and-language navigation: Interpreting visually-grounded
+  navigation instructions in real environments.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition (CVPR)}.
+
+\bibitem[{Bast et~al.(2016)Bast, Delling, Goldberg, Müller-Hannemann, Pajor,
+  Sanders, Wagner, and Werneck}]{bast-etal-2016-route-planning}
+Hannah Bast, Daniel Delling, Andrew Goldberg, Matthias Müller-Hannemann,
+  Thomas Pajor, Peter Sanders, Dorothea Wagner, and Renato~F. Werneck. 2016.
+\newblock \href {https://doi.org/10.1007/978-3-319-49487-6_2} {\emph{Route
+  Planning in Transportation Networks}}, pages 19--80.
+\newblock Springer International Publishing.
+
+\bibitem[{Brown et~al.(2020)Brown, Mann, Ryder, Subbiah, Kaplan, Dhariwal,
+  Neelakantan, Shyam, Sastry, Askell, Agarwal, Herbert-Voss, Krueger, Henighan,
+  Child, Ramesh, Ziegler, Wu, Winter, Hesse, Chen, Sigler, Litwin, Gray, Chess,
+  Clark, Berner, McCandlish, Radford, Sutskever, and
+  Amodei}]{NEURIPS2020_1457c0d6}
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared~D Kaplan, Prafulla
+  Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,
+  Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon
+  Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, and 12
+  others. 2020.
+\newblock \href
+  {https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf}
+  {Language models are few-shot learners}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 1877--1901. Curran Associates, Inc.
+
+\bibitem[{Chen et~al.(2019)Chen, Suhr, Misra, Snavely, and
+  Artzi}]{Chen_2019_CVPR}
+Howard Chen, Alane Suhr, Dipendra Misra, Noah Snavely, and Yoav Artzi. 2019.
+\newblock Touchdown: Natural language navigation and spatial reasoning in
+  visual street environments.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition (CVPR)}.
+
+\bibitem[{Haklay and Weber(2008)}]{Haklay_2008}
+M.~Haklay and P.~Weber. 2008.
+\newblock \href {https://doi.org/10.1109/mprv.2008.80} {{OpenStreetMap}:
+  User-generated street maps}.
+\newblock \emph{IEEE Pervasive Computing}, 7(4):12--18.
+
+\bibitem[{Hemphill et~al.(1990)Hemphill, Godfrey, and
+  Doddington}]{hemphill-etal-1990-atis}
+Charles~T. Hemphill, John~J. Godfrey, and George~R. Doddington. 1990.
+\newblock \href {https://aclanthology.org/H90-1021/} {The {ATIS} spoken
+  language systems pilot corpus}.
+\newblock In \emph{Speech and Natural Language: Proceedings of a Workshop Held
+  at Hidden Valley, {P}ennsylvania, June 24-27,1990}.
+
+\bibitem[{Ilharco et~al.(2019)Ilharco, Jain, Ku, Ie, and
+  Baldridge}]{ilharco-etal-2019-ndtw}
+Gabriel Ilharco, Vihan Jain, Alexander Ku, Eugene Ie, and Jason Baldridge.
+  2019.
+\newblock \href
+  {https://research.google/pubs/general-evaluation-for-instruction-conditioned-navigation-using-dynamic-time-warping/}
+  {General evaluation for instruction conditioned navigation using {Dynamic
+  Time Warping}}.
+\newblock In \emph{NeurIPS Visually Grounded Interaction and Language (ViGIL)
+  Workshop}.
+
+\bibitem[{Luxen and Vetter(2011)}]{luxen-vetter-2011}
+Dennis Luxen and Christian Vetter. 2011.
+\newblock \href {https://doi.org/10.1145/2093973.2094062} {Real-time routing
+  with {OpenStreetMap} data}.
+\newblock In \emph{Proceedings of the 19th ACM SIGSPATIAL International
+  Conference on Advances in Geographic Information Systems}, GIS '11, pages
+  513--516. ACM.
+
+\bibitem[{{Nominatim developer community}(2026)}]{nominatim_2026}
+{Nominatim developer community}. 2026.
+\newblock \href {https://nominatim.org/release-docs/latest/} {{{Nominatim}
+  5.3.2 Manual}}.
+\newblock [Online; accessed 8-July-2026].
+
+\bibitem[{{OpenFlights}(2026)}]{openflights_data_2026}
+{OpenFlights}. 2026.
+\newblock \href {https://openflights.org/data.php} {{OpenFlights}: Airport,
+  airline and route data}.
+\newblock [Online; accessed 8-July-2026].
+
+\bibitem[{Rastogi et~al.(2020)Rastogi, Zang, Sunkara, Gupta, and
+  Khaitan}]{rastogi-etal-2020-schema}
+Abhinav Rastogi, Xiaoxue Zang, Srinivas Sunkara, Raghav Gupta, and Pranav
+  Khaitan. 2020.
+\newblock \href {https://doi.org/10.1609/aaai.v34i05.6394} {Towards scalable
+  multi-domain conversational agents: The {Schema-Guided Dialogue} dataset}.
+\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
+  34(05):8689--8696.
+
+\bibitem[{Rizvi et~al.(2024)Rizvi, Zhu, and Gurevych}]{rizvi-etal-2024-sparc}
+Md~Imbesat Rizvi, Xiaodan Zhu, and Iryna Gurevych. 2024.
+\newblock \href {https://doi.org/10.18653/v1/2024.acl-long.261} {{S}pa{RC} and
+  {S}pa{RP}: Spatial reasoning characterization and path generation for
+  understanding spatial reasoning capability of large language models}.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}, pages 4750--4767,
+  Bangkok, Thailand. Association for Computational Linguistics.
+
+\bibitem[{Schick et~al.(2023)Schick, Dwivedi-Yu, Dessi, Raileanu, Lomeli,
+  Hambro, Zettlemoyer, Cancedda, and Scialom}]{NEURIPS2023_d842425e}
+Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli,
+  Eric Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom. 2023.
+\newblock \href
+  {https://proceedings.neurips.cc/paper_files/paper/2023/file/d842425e4bf79ba039352da0f658a906-Paper-Conference.pdf}
+  {{Toolformer}: Language models can teach themselves to use tools}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, pages 68539--68551. Curran Associates, Inc.
+
+\bibitem[{Schumann et~al.(2024)Schumann, Zhu, Feng, Fu, Riezler, and
+  Wang}]{Schumann_2024}
+Raphael Schumann, Wanrong Zhu, Weixi Feng, Tsu-Jui Fu, Stefan Riezler, and
+  William~Yang Wang. 2024.
+\newblock \href {https://doi.org/10.1609/aaai.v38i17.29858} {{VELMA}:
+  Verbalization embodiment of {LLM} agents for vision and language navigation
+  in street view}.
+\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
+  38(17):18924--18933.
+
+\bibitem[{Wei et~al.(2022)Wei, Wang, Schuurmans, Bosma, ichter, Xia, Chi, Le,
+  and Zhou}]{NEURIPS2022_9d560961}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, brian ichter, Fei Xia,
+  Ed~Chi, Quoc~V Le, and Denny Zhou. 2022.
+\newblock \href
+  {https://proceedings.neurips.cc/paper_files/paper/2022/file/9d5609613524ecf4f15af0f7b31abca4-Paper-Conference.pdf}
+  {Chain-of-thought prompting elicits reasoning in large language models}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~35, pages 24824--24837. Curran Associates, Inc.
+
+\bibitem[{Wiki(2026)}]{openstreetmap_wiki_overpass_2026}
+OpenStreetMap Wiki. 2026.
+\newblock \href
+  {https://wiki.openstreetmap.org/w/index.php?title=Overpass_API\&oldid=3049229}
+  {{Overpass API} --- {OpenStreetMap} wiki{,}}.
+\newblock [Online; accessed 23-June-2026].
+
+\bibitem[{Xie et~al.(2024)Xie, Zhang, Chen, Zhu, Lou, Tian, Xiao, and
+  Su}]{pmlr-v235-xie24j}
+Jian Xie, Kai Zhang, Jiangjie Chen, Tinghui Zhu, Renze Lou, Yuandong Tian,
+  Yanghua Xiao, and Yu~Su. 2024.
+\newblock \href {https://proceedings.mlr.press/v235/xie24j.html}
+  {{T}ravel{P}lanner: A benchmark for real-world planning with language
+  agents}.
+\newblock In \emph{Proceedings of the 41st International Conference on Machine
+  Learning}, volume 235 of \emph{Proceedings of Machine Learning Research},
+  pages 54590--54613. PMLR.
+
+\bibitem[{Xu et~al.(2025)Xu, Pan, Liu, and Wang}]{Xu_2025}
+Yunzhe Xu, Yiyuan Pan, Zhe Liu, and Hesheng Wang. 2025.
+\newblock \href {https://doi.org/10.1609/aaai.v39i9.32974} {{FLAME}: Learning
+  to navigate with multimodal {LLM} in urban environments}.
+\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
+  39(9):9005--9013.
+
+\bibitem[{Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and
+  Cao}]{yao2023react}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik~R Narasimhan,
+  and Yuan Cao. 2023.
+\newblock \href {https://openreview.net/forum?id=WE_vluYUL-X} {{ReAct}:
+  Synergizing reasoning and acting in language models}.
+\newblock In \emph{The Eleventh International Conference on Learning
+  Representations}.
+
+\bibitem[{Ye et~al.(2022)Ye, Manotumruksa, and Yilmaz}]{ye-etal-2022-multiwoz}
+Fanghua Ye, Jarana Manotumruksa, and Emine Yilmaz. 2022.
+\newblock \href {https://doi.org/10.18653/v1/2022.sigdial-1.34} {{M}ulti{WOZ}
+  2.4: A multi-domain task-oriented dialogue dataset with essential annotation
+  corrections to improve state tracking evaluation}.
+\newblock In \emph{Proceedings of the 23rd Annual Meeting of the Special
+  Interest Group on Discourse and Dialogue}, pages 351--360, Edinburgh, UK.
+  Association for Computational Linguistics.
+
+\end{thebibliography}

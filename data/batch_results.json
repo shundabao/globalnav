@@ -1,0 +1,973 @@
+[
+  {
+    "task_id": "clear_walk_paris",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Eiffel Tower",
+      "destination": "Paris",
+      "modes": [
+        "walk"
+      ],
+      "total_distance_km": 4.859914201147164,
+      "segments": [
+        {
+          "mode": "walk",
+          "from": "Eiffel Tower",
+          "to": "Paris",
+          "distance_km": 4.9,
+          "eta": "58 min",
+          "instructions": [
+            "Walk from Eiffel Tower toward Paris",
+            "Continue for approximately 5 km",
+            "Arrive at Paris"
+          ]
+        }
+      ],
+      "steps": 2,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "forward",
+          "observation": {
+            "location": "Eiffel Tower → Paris (step 1)",
+            "lat": 48.857803198973706,
+            "lon": 2.3137337939997895,
+            "mode": "Walking",
+            "instruction": "Continue for approximately 5 km",
+            "segment": "Eiffel Tower → Paris",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "forward"
+            ],
+            "task_instruction": "Walk from the Eiffel Tower to the Louvre in Paris",
+            "total_distance_km": 4.859914201147164,
+            "total_eta": "58 min"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "forward",
+          "observation": {
+            "location": "Eiffel Tower → Paris (step 2)",
+            "lat": 48.85720319892561,
+            "lon": 2.3329671281456057,
+            "mode": "Walking",
+            "instruction": "Arrive at Paris",
+            "segment": "Eiffel Tower → Paris",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Walk from the Eiffel Tower to the Louvre in Paris",
+            "total_distance_km": 4.859914201147164,
+            "total_eta": "58 min"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "clear_fly_transpacific",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Beijing",
+      "destination": "New York",
+      "modes": [
+        "fly"
+      ],
+      "total_distance_km": 13710.19147732495,
+      "segments": [
+        {
+          "mode": "fly",
+          "from": "Beijing",
+          "to": "New York",
+          "distance_km": 13710.2,
+          "eta": "17.6 h",
+          "instructions": [
+            "Proceed to departure airport near Beijing",
+            "Takeoff and climb to cruise altitude",
+            "Connect via London Heathrow (LHR)",
+            "Cruise for 13710 km",
+            "Descend and land at destination near New York"
+          ]
+        }
+      ],
+      "steps": 4,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "takeoff",
+          "observation": {
+            "location": "Beijing → New York (step 1)",
+            "lat": 59.93938798060281,
+            "lon": 81.82950778544051,
+            "mode": "Flying",
+            "instruction": "Takeoff and climb to cruise altitude",
+            "segment": "Beijing → New York",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Fly from Beijing to New York",
+            "total_distance_km": 13710.19147732495,
+            "total_eta": "17.6 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "cruise",
+          "observation": {
+            "location": "Beijing → New York (step 2)",
+            "lat": 60.13887599232557,
+            "lon": 20.856340472477545,
+            "mode": "Flying",
+            "instruction": "Connect via London Heathrow (LHR)",
+            "segment": "Beijing → New York",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Fly from Beijing to New York",
+            "total_distance_km": 13710.19147732495,
+            "total_eta": "17.6 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "cruise",
+          "observation": {
+            "location": "Beijing → New York (step 3)",
+            "lat": 53.52240466951102,
+            "lon": -16.539310986332513,
+            "mode": "Flying",
+            "instruction": "Cruise for 13710 km",
+            "segment": "Beijing → New York",
+            "progress": "step 4 of segment 1/1",
+            "available_actions": [
+              "land"
+            ],
+            "task_instruction": "Fly from Beijing to New York",
+            "total_distance_km": 13710.19147732495,
+            "total_eta": "17.6 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 3,
+          "action": "land",
+          "observation": {
+            "location": "Beijing → New York (step 4)",
+            "lat": 50.78146692109211,
+            "lon": -49.06395667436812,
+            "mode": "Flying",
+            "instruction": "Descend and land at destination near New York",
+            "segment": "Beijing → New York",
+            "progress": "step 5 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Fly from Beijing to New York",
+            "total_distance_km": 13710.19147732495,
+            "total_eta": "17.6 hours"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "clear_maritime",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Port of Shanghai",
+      "destination": "Port of Singapore",
+      "modes": [
+        "maritime"
+      ],
+      "total_distance_km": 4768.896994639689,
+      "segments": [
+        {
+          "mode": "maritime",
+          "from": "Port of Shanghai",
+          "to": "Port of Singapore",
+          "distance_km": 4768.9,
+          "eta": "5d 16h",
+          "instructions": [
+            "Depart port at Port of Shanghai",
+            "Navigate to open sea following coastal traffic separation scheme",
+            "Enter and transit Singapore Strait",
+            "Enter and transit Malacca Strait",
+            "Cruise 4769 nautical km equivalent",
+            "Dock at Port of Singapore"
+          ]
+        }
+      ],
+      "steps": 5,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "depart",
+          "observation": {
+            "location": "Port of Shanghai → Port of Singapore (step 1)",
+            "lat": 27.06575565069906,
+            "lon": 118.5293365957468,
+            "mode": "Maritime",
+            "instruction": "Navigate to open sea following coastal traffic separation scheme",
+            "segment": "Port of Shanghai → Port of Singapore",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+            "total_distance_km": 4768.896994639689,
+            "total_eta": "5d 16h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "cruise",
+          "observation": {
+            "location": "Port of Shanghai → Port of Singapore (step 2)",
+            "lat": 21.99347494922255,
+            "lon": 115.25437722993465,
+            "mode": "Maritime",
+            "instruction": "Enter and transit Singapore Strait",
+            "segment": "Port of Shanghai → Port of Singapore",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+            "total_distance_km": 4768.896994639689,
+            "total_eta": "5d 16h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "cruise",
+          "observation": {
+            "location": "Port of Shanghai → Port of Singapore (step 3)",
+            "lat": 16.86071753062524,
+            "lon": 112.20730307331073,
+            "mode": "Maritime",
+            "instruction": "Enter and transit Malacca Strait",
+            "segment": "Port of Shanghai → Port of Singapore",
+            "progress": "step 4 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+            "total_distance_km": 4768.896994639689,
+            "total_eta": "5d 16h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 3,
+          "action": "cruise",
+          "observation": {
+            "location": "Port of Shanghai → Port of Singapore (step 4)",
+            "lat": 11.685376685139577,
+            "lon": 109.3223204762349,
+            "mode": "Maritime",
+            "instruction": "Cruise 4769 nautical km equivalent",
+            "segment": "Port of Shanghai → Port of Singapore",
+            "progress": "step 5 of segment 1/1",
+            "available_actions": [
+              "dock"
+            ],
+            "task_instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+            "total_distance_km": 4768.896994639689,
+            "total_eta": "5d 16h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 4,
+          "action": "dock",
+          "observation": {
+            "location": "Port of Shanghai → Port of Singapore (step 5)",
+            "lat": 6.4822900736031634,
+            "lon": 106.54367558381726,
+            "mode": "Maritime",
+            "instruction": "Dock at Port of Singapore",
+            "segment": "Port of Shanghai → Port of Singapore",
+            "progress": "step 6 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Ship cargo from Port of Shanghai to Port of Singapore",
+            "total_distance_km": 4768.896994639689,
+            "total_eta": "5d 16h"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "multimodal_sf_tokyo",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "San Francisco",
+      "destination": "Tokyo",
+      "modes": [
+        "drive",
+        "fly"
+      ],
+      "total_distance_km": 11156.549158492744,
+      "segments": [
+        {
+          "mode": "drive",
+          "from": "San Francisco",
+          "to": "Tokyo Narita",
+          "distance_km": 11088.7,
+          "eta": "5d 19h",
+          "instructions": [
+            "Drive from San Francisco toward Tokyo Narita",
+            "Continue for approximately 11089 km",
+            "Arrive at Tokyo Narita"
+          ]
+        },
+        {
+          "mode": "fly",
+          "from": "Tokyo Narita",
+          "to": "Tokyo",
+          "distance_km": 67.9,
+          "eta": "1.6 h",
+          "instructions": [
+            "Proceed to departure airport near Tokyo Narita",
+            "Takeoff and climb to cruise altitude",
+            "Cruise for 68 km",
+            "Descend and land at destination near Tokyo"
+          ]
+        }
+      ],
+      "steps": 6,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "forward",
+          "observation": {
+            "location": "San Francisco → Tokyo Narita (step 1)",
+            "lat": 47.44094539412305,
+            "lon": -153.49732146413604,
+            "mode": "Driving",
+            "instruction": "Continue for approximately 11089 km",
+            "segment": "San Francisco → Tokyo Narita",
+            "progress": "step 2 of segment 1/2",
+            "available_actions": [
+              "forward"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "forward",
+          "observation": {
+            "location": "San Francisco → Tokyo Narita (step 2)",
+            "lat": 46.60587528141687,
+            "lon": 170.06819608978185,
+            "mode": "Driving",
+            "instruction": "Arrive at Tokyo Narita",
+            "segment": "San Francisco → Tokyo Narita",
+            "progress": "step 3 of segment 1/2",
+            "available_actions": [
+              "forward"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "forward",
+          "observation": {
+            "location": "Tokyo Narita → Tokyo (step 0)",
+            "lat": 35.772,
+            "lon": 140.3929,
+            "mode": "Flying",
+            "instruction": "Proceed to departure airport near Tokyo Narita",
+            "segment": "Tokyo Narita → Tokyo",
+            "progress": "step 1 of segment 2/2",
+            "available_actions": [
+              "takeoff"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 3,
+          "action": "takeoff",
+          "observation": {
+            "location": "Tokyo Narita → Tokyo (step 1)",
+            "lat": 35.74847792926084,
+            "lon": 140.20708314178853,
+            "mode": "Flying",
+            "instruction": "Takeoff and climb to cruise altitude",
+            "segment": "Tokyo Narita → Tokyo",
+            "progress": "step 2 of segment 2/2",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 4,
+          "action": "cruise",
+          "observation": {
+            "location": "Tokyo Narita → Tokyo (step 2)",
+            "lat": 35.72467029113416,
+            "lon": 140.0213767454739,
+            "mode": "Flying",
+            "instruction": "Cruise for 68 km",
+            "segment": "Tokyo Narita → Tokyo",
+            "progress": "step 3 of segment 2/2",
+            "available_actions": [
+              "land"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 5,
+          "action": "land",
+          "observation": {
+            "location": "Tokyo Narita → Tokyo (step 3)",
+            "lat": 35.70057750635862,
+            "lon": 139.8357819783241,
+            "mode": "Flying",
+            "instruction": "Descend and land at destination near Tokyo",
+            "segment": "Tokyo Narita → Tokyo",
+            "progress": "step 4 of segment 2/2",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Drive to the airport in San Francisco and fly to Tokyo",
+            "total_distance_km": 11156.549158492744,
+            "total_eta": "5d 20h"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "ambiguous_no_dest",
+    "clarification_ok": true,
+    "needs_clarification": true,
+    "questions": [
+      "Where do you want to go? Please provide a city, address, or landmark."
+    ],
+    "navigation": {
+      "status": "failed",
+      "error": "Could not geocode: origin=London, dest=walk"
+    }
+  },
+  {
+    "task_id": "ambiguous_vague_dest",
+    "clarification_ok": true,
+    "needs_clarification": true,
+    "questions": [
+      "Where are you starting from? Please provide a city, address, or landmark.",
+      "Where do you want to go? Please provide a city, address, or landmark."
+    ],
+    "navigation": {
+      "status": "failed",
+      "error": "Could not geocode: origin=walk, dest=walk"
+    }
+  },
+  {
+    "task_id": "ambiguous_no_mode",
+    "clarification_ok": true,
+    "needs_clarification": true,
+    "questions": [
+      "The trip appears to be ~8217 km. How would you like to travel: fly, drive, maritime (ship), or walk?"
+    ],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Beijing",
+      "destination": "Paris",
+      "modes": [
+        "fly"
+      ],
+      "total_distance_km": 8512.79800322622,
+      "segments": [
+        {
+          "mode": "fly",
+          "from": "Beijing",
+          "to": "Paris",
+          "distance_km": 8512.8,
+          "eta": "11.5 h",
+          "instructions": [
+            "Proceed to departure airport near Beijing",
+            "Takeoff and climb to cruise altitude",
+            "Connect via London Heathrow (LHR)",
+            "Cruise for 8513 km",
+            "Descend and land at destination near Paris"
+          ]
+        }
+      ],
+      "steps": 4,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "takeoff",
+          "observation": {
+            "location": "Beijing → Paris (step 1)",
+            "lat": 59.93938798060281,
+            "lon": 81.82950778544051,
+            "mode": "Flying",
+            "instruction": "Takeoff and climb to cruise altitude",
+            "segment": "Beijing → Paris",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Get me from Beijing to Paris as fast as possible",
+            "total_distance_km": 8512.79800322622,
+            "total_eta": "11.5 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "cruise",
+          "observation": {
+            "location": "Beijing → Paris (step 2)",
+            "lat": 60.13887599232557,
+            "lon": 20.856340472477545,
+            "mode": "Flying",
+            "instruction": "Connect via London Heathrow (LHR)",
+            "segment": "Beijing → Paris",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Get me from Beijing to Paris as fast as possible",
+            "total_distance_km": 8512.79800322622,
+            "total_eta": "11.5 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "cruise",
+          "observation": {
+            "location": "Beijing → Paris (step 3)",
+            "lat": 50.9528372845273,
+            "lon": 0.13199898638065505,
+            "mode": "Flying",
+            "instruction": "Cruise for 8513 km",
+            "segment": "Beijing → Paris",
+            "progress": "step 4 of segment 1/1",
+            "available_actions": [
+              "land"
+            ],
+            "task_instruction": "Get me from Beijing to Paris as fast as possible",
+            "total_distance_km": 8512.79800322622,
+            "total_eta": "11.5 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 3,
+          "action": "land",
+          "observation": {
+            "location": "Beijing → Paris (step 4)",
+            "lat": 49.910014797793295,
+            "lon": 1.266224811799544,
+            "mode": "Flying",
+            "instruction": "Descend and land at destination near Paris",
+            "segment": "Beijing → Paris",
+            "progress": "step 5 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Get me from Beijing to Paris as fast as possible",
+            "total_distance_km": 8512.79800322622,
+            "total_eta": "11.5 hours"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "ambiguous_unrealistic_walk",
+    "clarification_ok": true,
+    "needs_clarification": true,
+    "questions": [
+      "The distance is approximately 7826 km. Walking is not practical. Would you like to fly or take a ship instead?"
+    ],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Tokyo",
+      "destination": "Sydney",
+      "modes": [
+        "fly"
+      ],
+      "total_distance_km": 11591.171524703406,
+      "segments": [
+        {
+          "mode": "fly",
+          "from": "Tokyo",
+          "to": "Sydney",
+          "distance_km": 11591.2,
+          "eta": "15.1 h",
+          "instructions": [
+            "Proceed to departure airport near Tokyo",
+            "Takeoff and climb to cruise altitude",
+            "Connect via Singapore (SIN)",
+            "Cruise for 11591 km",
+            "Descend and land at destination near Sydney"
+          ]
+        }
+      ],
+      "steps": 4,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "takeoff",
+          "observation": {
+            "location": "Tokyo → Sydney (step 1)",
+            "lat": 22.83919445172505,
+            "lon": 123.42484403689909,
+            "mode": "Flying",
+            "instruction": "Takeoff and climb to cruise altitude",
+            "segment": "Tokyo → Sydney",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Walk from Tokyo to Sydney",
+            "total_distance_km": 11591.171524703406,
+            "total_eta": "15.1 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "cruise",
+          "observation": {
+            "location": "Tokyo → Sydney (step 2)",
+            "lat": 8.658101124804102,
+            "lon": 110.15163572065352,
+            "mode": "Flying",
+            "instruction": "Connect via Singapore (SIN)",
+            "segment": "Tokyo → Sydney",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Walk from Tokyo to Sydney",
+            "total_distance_km": 11591.171524703406,
+            "total_eta": "15.1 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "cruise",
+          "observation": {
+            "location": "Tokyo → Sydney (step 3)",
+            "lat": -6.35921587276007,
+            "lon": 112.28049401400818,
+            "mode": "Flying",
+            "instruction": "Cruise for 11591 km",
+            "segment": "Tokyo → Sydney",
+            "progress": "step 4 of segment 1/1",
+            "available_actions": [
+              "land"
+            ],
+            "task_instruction": "Walk from Tokyo to Sydney",
+            "total_distance_km": 11591.171524703406,
+            "total_eta": "15.1 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 3,
+          "action": "land",
+          "observation": {
+            "location": "Tokyo → Sydney (step 4)",
+            "lat": -21.21767745944661,
+            "lon": 129.93019733917856,
+            "mode": "Flying",
+            "instruction": "Descend and land at destination near Sydney",
+            "segment": "Tokyo → Sydney",
+            "progress": "step 5 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Walk from Tokyo to Sydney",
+            "total_distance_km": 11591.171524703406,
+            "total_eta": "15.1 hours"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "clear_drive_us",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "San Francisco",
+      "destination": "Los Angeles",
+      "modes": [
+        "drive"
+      ],
+      "total_distance_km": 754.812779033097,
+      "segments": [
+        {
+          "mode": "drive",
+          "from": "San Francisco",
+          "to": "Los Angeles",
+          "distance_km": 754.8,
+          "eta": "9.4 h",
+          "instructions": [
+            "Drive from San Francisco toward Los Angeles",
+            "Continue for approximately 755 km",
+            "Arrive at Los Angeles"
+          ]
+        }
+      ],
+      "steps": 2,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "forward",
+          "observation": {
+            "location": "San Francisco → Los Angeles (step 1)",
+            "lat": 36.55026781372994,
+            "lon": -120.98333132325982,
+            "mode": "Driving",
+            "instruction": "Continue for approximately 755 km",
+            "segment": "San Francisco → Los Angeles",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "forward"
+            ],
+            "task_instruction": "Drive from San Francisco to Los Angeles",
+            "total_distance_km": 754.812779033097,
+            "total_eta": "9.4 hours"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "forward",
+          "observation": {
+            "location": "San Francisco → Los Angeles (step 2)",
+            "lat": 35.308955748154276,
+            "lon": -119.59236409393344,
+            "mode": "Driving",
+            "instruction": "Arrive at Los Angeles",
+            "segment": "San Francisco → Los Angeles",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Drive from San Francisco to Los Angeles",
+            "total_distance_km": 754.812779033097,
+            "total_eta": "9.4 hours"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "maritime_rotterdam",
+    "clarification_ok": true,
+    "needs_clarification": false,
+    "questions": [],
+    "navigation": {
+      "status": "done",
+      "success": true,
+      "origin": "Port of Rotterdam",
+      "destination": "Port of Singapore",
+      "modes": [
+        "maritime"
+      ],
+      "total_distance_km": 13196.761204775528,
+      "segments": [
+        {
+          "mode": "maritime",
+          "from": "Port of Rotterdam",
+          "to": "Port of Singapore",
+          "distance_km": 13196.8,
+          "eta": "15d 17h",
+          "instructions": [
+            "Depart port at Port of Rotterdam",
+            "Navigate to open sea following coastal traffic separation scheme",
+            "Cruise 13197 nautical km equivalent",
+            "Dock at Port of Singapore"
+          ]
+        }
+      ],
+      "steps": 3,
+      "trajectory": [
+        {
+          "step": 0,
+          "action": "depart",
+          "observation": {
+            "location": "Port of Rotterdam → Port of Singapore (step 1)",
+            "lat": 49.91040453382919,
+            "lon": 38.75650586384486,
+            "mode": "Maritime",
+            "instruction": "Navigate to open sea following coastal traffic separation scheme",
+            "segment": "Port of Rotterdam → Port of Singapore",
+            "progress": "step 2 of segment 1/1",
+            "available_actions": [
+              "cruise"
+            ],
+            "task_instruction": "Navigate by sea from Port of Rotterdam to Port of Singapore via Suez Canal",
+            "total_distance_km": 13196.761204775528,
+            "total_eta": "15d 17h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 1,
+          "action": "cruise",
+          "observation": {
+            "location": "Port of Rotterdam → Port of Singapore (step 2)",
+            "lat": 37.65771406360612,
+            "lon": 68.38077926066154,
+            "mode": "Maritime",
+            "instruction": "Cruise 13197 nautical km equivalent",
+            "segment": "Port of Rotterdam → Port of Singapore",
+            "progress": "step 3 of segment 1/1",
+            "available_actions": [
+              "dock"
+            ],
+            "task_instruction": "Navigate by sea from Port of Rotterdam to Port of Singapore via Suez Canal",
+            "total_distance_km": 13196.761204775528,
+            "total_eta": "15d 17h"
+          },
+          "done": false,
+          "info": {}
+        },
+        {
+          "step": 2,
+          "action": "dock",
+          "observation": {
+            "location": "Port of Rotterdam → Port of Singapore (step 3)",
+            "lat": 20.339725400232744,
+            "lon": 88.22697599187467,
+            "mode": "Maritime",
+            "instruction": "Dock at Port of Singapore",
+            "segment": "Port of Rotterdam → Port of Singapore",
+            "progress": "step 4 of segment 1/1",
+            "available_actions": [
+              "stop"
+            ],
+            "task_instruction": "Navigate by sea from Port of Rotterdam to Port of Singapore via Suez Canal",
+            "total_distance_km": 13196.761204775528,
+            "total_eta": "15d 17h"
+          },
+          "done": true,
+          "info": {
+            "success": true,
+            "reason": "reached_goal"
+          }
+        }
+      ]
+    }
+  }
+]

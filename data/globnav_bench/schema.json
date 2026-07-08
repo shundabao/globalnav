@@ -1,0 +1,69 @@
+{
+  "$id": "https://globalnav.example.org/globnav-bench.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "annotation_status": {
+      "type": "string"
+    },
+    "categories": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "clarification": {
+      "type": "object"
+    },
+    "follower_annotation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "gold_intent": {
+      "type": "object"
+    },
+    "id": {
+      "type": "string"
+    },
+    "instruction": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "route_annotation": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "0.2"
+    },
+    "split": {
+      "enum": [
+        "hybrid_follower",
+        "intent_clarification",
+        "planning_feasibility",
+        "route_option_generation",
+        "stress_test"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "split",
+    "language",
+    "instruction",
+    "categories",
+    "gold_intent",
+    "clarification",
+    "route_annotation",
+    "follower_annotation",
+    "metadata"
+  ],
+  "title": "GlobNav-Bench example",
+  "type": "object"
+}

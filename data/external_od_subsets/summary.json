@@ -1,0 +1,84 @@
+{
+  "method": "Deterministic filtering of original test annotations; no LLM, manual sample IDs, or generated labels.",
+  "recommended_primary_evaluation": {
+    "explicit_od": {
+      "MultiWOZ 2.4": 225,
+      "Schema-Guided Dialogue": 332,
+      "ATIS": 609,
+      "total": 1166
+    },
+    "clarification_resolution": {
+      "MultiWOZ 2.4": 156,
+      "Schema-Guided Dialogue": 401,
+      "ATIS": 0,
+      "total": 557
+    }
+  },
+  "datasets": {
+    "MultiWOZ 2.4": {
+      "source_dialogues": 999,
+      "annotation_candidates": {
+        "explicit_od": 360,
+        "clarification_resolution": 190
+      },
+      "strict_subset": {
+        "explicit_od": 225,
+        "clarification_resolution": 156
+      },
+      "strict_subset_by_domain": {
+        "explicit_od": {
+          "train": 205,
+          "taxi": 20
+        },
+        "clarification_resolution": {
+          "train": 140,
+          "taxi": 16
+        }
+      }
+    },
+    "Schema-Guided Dialogue": {
+      "source_dialogues": 4201,
+      "strict_subset": {
+        "explicit_od": 332,
+        "clarification_resolution": 401
+      },
+      "strict_subset_by_service": {
+        "explicit_od": {
+          "Flights_4": 64,
+          "Buses_3": 136,
+          "Trains_1": 132
+        },
+        "clarification_resolution": {
+          "Flights_4": 116,
+          "Buses_3": 133,
+          "Trains_1": 152
+        }
+      }
+    },
+    "ATIS": {
+      "source_rows": 893,
+      "rows_with_fromloc_and_toloc": 691,
+      "strict_single_pair_subset": 609,
+      "strict_single_pair_city_to_city": 590,
+      "multi_endpoint_stress_subset": 82,
+      "strict_subset_by_slot_pair": {
+        "fromloc.airport_code -> toloc.airport_code": 1,
+        "fromloc.airport_code -> toloc.city_name": 4,
+        "fromloc.airport_name -> toloc.city_name": 5,
+        "fromloc.city_name -> toloc.airport_code": 3,
+        "fromloc.city_name -> toloc.airport_name": 2,
+        "fromloc.city_name -> toloc.city_name": 590,
+        "fromloc.city_name -> toloc.state_name": 3,
+        "fromloc.state_code -> toloc.city_name": 1
+      }
+    }
+  },
+  "files": {
+    "multiwoz24_explicit_od.jsonl": 225,
+    "multiwoz24_clarification.jsonl": 156,
+    "sgd_explicit_od.jsonl": 332,
+    "sgd_clarification.jsonl": 401,
+    "atis_explicit_single_pair.jsonl": 609,
+    "atis_multi_endpoint_stress.jsonl": 82
+  }
+}
