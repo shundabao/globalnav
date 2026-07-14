@@ -238,13 +238,13 @@ class GlobalInstructionSimulator:
                 self.streetview.enrich_observation(obs)
             else:
                 obs['streetview'] = {
-                    'available': False, 'reason': 'disabled', 'message': '街景已关闭',
+                    'available': False, 'reason': 'disabled', 'message': 'Street View is disabled',
                 }
         elif leg.mode in ('fly', 'train', 'bus', 'tram', 'maritime'):
             obs['streetview'] = {
                 'available': False,
                 'reason': f'{leg.mode}_phase',
-                'message': f'{leg.mode} 阶段无街景',
+                'message': f'No Street View for the {leg.mode} phase',
                 'phase': leg.phase_labels[min(self.state.phase_index, len(leg.phase_labels) - 1)]
                 if leg.phase_labels else '',
             }

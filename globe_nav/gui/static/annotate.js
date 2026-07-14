@@ -142,7 +142,7 @@ function renderSegments() {
   const box = $('segmentList');
   if (!state.plan?.segments?.length) {
     box.className = 'segment-list empty';
-    box.textContent = '生成路线后选择每一段的 ground truth option。';
+    box.textContent = 'Generate a route, then choose the ground-truth option for each segment.';
     return;
   }
   box.className = 'segment-list';
@@ -189,13 +189,13 @@ function showStreetView(node) {
   const sv = node?.streetview || {};
   frame.classList.remove('has-image');
   if (sv.available && sv.image_url) {
-    $('streetviewPlaceholder').innerHTML = '<span>Street View</span><p>正在加载街景图像…</p>';
+    $('streetviewPlaceholder').innerHTML = '<span>Street View</span><p>Loading Street View image...</p>';
     img.onload = () => frame.classList.add('has-image');
-    img.onerror = () => setStreetViewPlaceholder('街景图像加载失败', '可以继续标注，或稍后重试这一点');
+    img.onerror = () => setStreetViewPlaceholder('Street View image failed to load', 'You can continue annotating or retry this node later.');
     img.src = `${sv.image_url}&_=${Date.now()}`;
     return;
   }
-  setStreetViewPlaceholder(sv.message || '此节点没有街景', sv.reason || '');
+  setStreetViewPlaceholder(sv.message || 'No Street View is available for this node', sv.reason || '');
 }
 
 function actionOptions(node) {
@@ -278,7 +278,7 @@ function renderNodeList() {
   const list = $('nodeList');
   if (!state.nodes.length) {
     list.className = 'node-list empty';
-    list.textContent = '开始标注后这里会显示路线节点。';
+    list.textContent = 'Route nodes will appear here after annotation starts.';
     return;
   }
   list.className = 'node-list';
@@ -311,7 +311,7 @@ async function refreshStreetViewStatus() {
 }
 
 async function randomPair() {
-  $('setupStatus').textContent = '随机选择中…';
+  $('setupStatus').textContent = 'Choosing a random pair...';
   const res = await fetch('/api/annotate/random?scope=local');
   const data = await res.json();
   if (data.error) {
@@ -330,7 +330,7 @@ async function planRoute() {
 
   $('planBtn').disabled = true;
   $('startBtn').disabled = true;
-  $('setupStatus').textContent = '环境正在计算路线选项…';
+  $('setupStatus').textContent = 'The environment is computing route options...';
   try {
     const res = await fetch('/api/annotate/plan', {
       method: 'POST',
@@ -339,7 +339,7 @@ async function planRoute() {
     });
     const data = await res.json();
     if (data.error) {
-      $('setupStatus').textContent = `错误: ${data.error}`;
+      $('setupStatus').textContent = `Error: ${data.error}`;
       return;
     }
     state.sessionId = data.session_id;
@@ -351,14 +351,14 @@ async function planRoute() {
       const preferred = preferredAnnotationOption(seg);
       state.selections[seg.segment_id] = preferred?.option_id || seg.default_option_id;
     });
-    $('setupStatus').textContent = '路线已生成，选择 option 后固定路线。';
+    $('setupStatus').textContent = 'Route generated. Choose options, then lock the route.';
     $('startBtn').disabled = false;
     renderSegments();
     drawRouteGeometry(data.route_geometry);
     renderNodeList();
     updateProgress();
   } catch (e) {
-    $('setupStatus').textContent = `请求失败: ${e.message}`;
+    $('setupStatus').textContent = `Request failed: ${e.message}`;
   } finally {
     $('planBtn').disabled = false;
   }
@@ -367,7 +367,7 @@ async function planRoute() {
 async function startAnnotation() {
   if (!state.sessionId) return;
   $('startBtn').disabled = true;
-  $('setupStatus').textContent = '正在生成逐节点标注任务…';
+  $('setupStatus').textContent = 'Generating node-level annotation tasks...';
   try {
     const res = await fetch('/api/annotate/start', {
       method: 'POST',
@@ -381,19 +381,19 @@ async function startAnnotation() {
     });
     const data = await res.json();
     if (data.error) {
-      $('setupStatus').textContent = `错误: ${data.error}`;
+      $('setupStatus').textContent = `Error: ${data.error}`;
       return;
     }
     state.nodes = data.nodes || [];
     state.currentIndex = -1;
-    $('setupStatus').textContent = `已固定路线：${data.node_count} 个节点。`;
+    $('setupStatus').textContent = `Route locked: ${data.node_count} nodes.`;
     drawRouteGeometry(data.route_geometry);
     renderNodeMarkers();
     renderNodeList();
     updateProgress();
     if (state.nodes.length) selectNode(0);
   } catch (e) {
-    $('setupStatus').textContent = `请求失败: ${e.message}`;
+    $('setupStatus').textContent = `Request failed: ${e.message}`;
   } finally {
     $('startBtn').disabled = false;
   }
@@ -402,7 +402,7 @@ async function startAnnotation() {
 async function saveAnnotations() {
   if (!state.nodes.length) return;
   persistCurrentNode();
-  $('saveStatus').textContent = '保存中…';
+  $('saveStatus').textContent = 'Saving...';
   try {
     const res = await fetch('/api/annotate/save', {
       method: 'POST',
@@ -416,12 +416,12 @@ async function saveAnnotations() {
     });
     const data = await res.json();
     if (data.error) {
-      $('saveStatus').textContent = `保存失败: ${data.error}`;
+      $('saveStatus').textContent = `Save failed: ${data.error}`;
       return;
     }
-    $('saveStatus').textContent = `已保存 ${data.record_id} · ${data.node_count} nodes`;
+    $('saveStatus').textContent = `Saved ${data.record_id} · ${data.node_count} nodes`;
   } catch (e) {
-    $('saveStatus').textContent = `保存失败: ${e.message}`;
+    $('saveStatus').textContent = `Save failed: ${e.message}`;
   }
 }
 

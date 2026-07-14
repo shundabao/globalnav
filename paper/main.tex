@@ -1,7 +1,10 @@
 \documentclass[11pt]{article}
 
 % Change "review" to "final" for a camera-ready version.
-\usepackage[review]{acl}
+\usepackage[preprint]{acl}
+% \makeatletter
+% \acl@anonymizefalse
+% \makeatother
 
 \usepackage{times}
 \usepackage{latexsym}
@@ -15,11 +18,28 @@
 \usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{xcolor}
+\usepackage{listings}
 \usepackage{enumitem}
 \usepackage{xspace}
 
 \newcommand{\sys}{GLOBALNAV\xspace}
 \newcommand{\bench}{GlobNav-Bench\xspace}
+
+\lstdefinestyle{promptstyle}{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  framerule=0.3pt,
+  framesep=3pt,
+  backgroundcolor=\color{gray!5},
+  rulecolor=\color{gray!45},
+  aboveskip=0.5em,
+  belowskip=0.5em
+}
 
 
 \newcommand{\placeholder}[1]{%
@@ -32,18 +52,21 @@
   \end{center}
 }
 
-\title{\sys: An Environment-Driven Demo for Global Multi-Modal Route Planning}
+\title{\sys: An Environment-Driven Agent for Global Multimodal Route Planning}
 
 \author{
-  Anonymous Authors \\
-  \texttt{\{anonymous\}@example.edu}
+  Shunfeng Zheng$^{1}$, Meng Fang$^{2}$, Ling Chen$^{1}$ \\
+  $^{1}$University of Technology Sydney, New South Wales, Australia \\
+  $^{2}$University of Liverpool, Liverpool, the United Kingdom \\
+  \texttt{Shunfeng.Zheng@student.uts.edu.au} \\
+  \texttt{Meng.Fang@liverpool.ac.uk, Ling.Chen@uts.edu.au}
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Real-world travel requests are often global, multi-modal, and interactive: a user may ask for a trip that combines local access, long-distance transportation, ground transfers, and clarification of underspecified endpoints. We present \sys, an LLM-based system that uses an LLM for intent extraction, ambiguity clarification, and instruction decomposition, while a routing backend generates feasible routes from OpenStreetMap, OpenFlights, Overpass, and mode-specific graph search. \sys presents segment-level route alternatives in an interactive interface, allowing users to inspect, compare, and revise walking, driving, public-transit, flight, ferry, and transfer options. We also introduce \bench, a 100-example benchmark for evaluating system-level success in global multi-modal route planning; the benchmark retains optional route-playback annotations for future instruction-following studies, but the demo evaluation focuses on whether the system resolves user requests and returns feasible route plans. Across \bench and 1,723 external route-request instances derived from MultiWOZ 2.4, Schema-Guided Dialogue, and ATIS, we evaluate \sys, with the best LLM-backed configuration achieving 86\% system success on \bench and 95.2\% on the external set.
+Real-world travel requests are often global, multi-modal, and interactive: a user may ask for a trip that combines local access, long-distance transportation, ground transfers, and clarification of underspecified endpoints. We present \sys, an LLM-based system that uses an LLM for intent extraction and ambiguity clarification, while a routing backend generates route options from OpenStreetMap, OpenFlights, Overpass, and mode-specific graph search. \sys presents segment-level route alternatives in an interactive interface, allowing users to inspect, compare, and revise walking, driving, public-transit, flight, ferry, and transfer options. We also introduce \bench, a 100-example benchmark for evaluating system-level success in global multi-modal route planning, focusing on whether the system resolves user requests and returns grounded travel solutions. Across \bench and 1,723 external route-request instances derived from MultiWOZ 2.4, Schema-Guided Dialogue, and ATIS, we evaluate \sys, with the deployed GPT-4.1 mini configuration achieving 97\% system success on \bench and 97.4\% on the external set. \sys is available at \url{https://sites.google.com/view/globalnav/home}.
 
 
 
@@ -52,327 +75,259 @@ Real-world travel requests are often global, multi-modal, and interactive: a use
 
 \section{Introduction}
 
-Real-world travel planning is rarely a single-mode shortest-path problem~\citep{bast-etal-2016-route-planning}. A user may ask for a trip that combines walking to a station, taking public transit to an airport, flying to another city, and choosing between a taxi, ferry, or walking route for the final segment. The same user may also express personal preferences, such as avoiding driving, preferring a scenic ferry, minimizing transfers, or asking for a cheaper public-transport option. As AI assistants become a more natural interface for everyday services~\citep{rastogi-etal-2020-schema}, navigation systems increasingly need to recover structured travel intent from informal, underspecified language rather than from pre-filled forms~\citep{hemphill-etal-1990-atis}. A practical system must therefore (i) extract origins, destinations, and constraints from free-form user requests; (ii) ask targeted clarification questions when endpoints are missing or ambiguous; (iii) determine feasible transportation modes from map and transport data rather than language priors alone; and (iv) expose alternative segment-level choices to the user, since the ``best'' route is often subjective.
+Real-world travel planning is rarely a single-mode shortest-path problem~\citep{bast-etal-2016-route-planning}. A user may ask for a trip that combines walking to a station, taking public transit to an airport, flying to another city, and choosing between a taxi, ferry, or walking route for the final segment. The same user may also express personal preferences, such as avoiding driving, preferring a scenic ferry, minimizing transfers, or asking for a cheaper public-transport option. As AI assistants become a more natural interface for everyday services~\citep{rastogi-etal-2020-schema}, navigation systems increasingly need to recover structured travel intent from informal, underspecified language rather than from pre-filled forms~\citep{hemphill-etal-1990-atis}. A practical system must therefore (i) extract origins, destinations, and constraints from free-form user requests; (ii) ask targeted clarification questions when endpoints are missing or ambiguous; (iii) determine transportation modes from map and transport data rather than language priors alone; and (iv) expose alternative segment-level choices to the user, since the ``best'' route is often subjective.
 
 
-LLMs have advanced rapidly as general-purpose language interfaces: scaling improves few-shot task adaptation~\citep{NEURIPS2020_1457c0d6}, chain-of-thought prompting improves multi-step reasoning~\citep{NEURIPS2022_9d560961}, and recent work explicitly studies their spatial-reasoning and path-generation capabilities~\citep{rizvi-etal-2024-sparc}. However, existing route-planning interfaces and LLM assistants still leave a gap between natural language travel intent and grounded multi-modal routes. Conventional map interfaces are strong once the origin, destination, and mode are specified, but they usually assume that the user has already resolved ambiguous places, decomposed a complex trip into stages, and chosen which transportation modes to compare. Recent language-agent travel-planning benchmarks similarly show that LLM agents struggle with tool use and constraint tracking in realistic travel tasks~\citep{pmlr-v235-xie24j}. Pure LLM planning, by contrast, can produce fluent itineraries but cannot by itself guarantee that an airport transfer, ferry leg, road segment, or public-transit option is supported by external mobility evidence.
+Large language models (LLMs) have advanced rapidly as general-purpose language interfaces: scaling improves few-shot task adaptation~\citep{NEURIPS2020_1457c0d6}, chain-of-thought prompting improves multi-step reasoning~\citep{NEURIPS2022_9d560961}, and recent work explicitly studies their spatial-reasoning and path-generation capabilities~\citep{rizvi-etal-2024-sparc}. However, existing route-planning interfaces and LLM assistants still leave a gap between natural language travel intent and grounded multi-modal routes. Conventional map interfaces are strong once the origin, destination, and mode are specified, but they usually assume that the user has already resolved ambiguous places, decomposed a complex trip into stages, and chosen which transportation modes to compare. Recent language-agent travel-planning benchmarks similarly show that LLM agents struggle with tool use and constraint tracking in realistic travel tasks~\citep{pmlr-v235-xie24j}. Pure LLM planning, by contrast, can produce fluent itineraries but cannot by itself guarantee that an airport transfer, ferry leg, road segment, or public-transit option is supported by external mobility evidence.
 
-\begin{figure*}[ht]
-\centering
-\includegraphics[width=\linewidth]{figure/pipeline.png}
-\caption{Overview of \sys. The LLM handles language-facing tasks; the mobility environment determines feasible route options.}
-\label{fig:architecture}
-\end{figure*}
-
-To address these requirements, we introduce \sys, an LLM-based, environment-driven demo for global route planning. \sys uses the LLM for language-facing operations, including intent parsing, ambiguity clarification, and high-level route explanation, while route feasibility and travel options are determined by a routing environment. For local and access segments, the environment constructs route candidates from OSRM road routes, OSM/Overpass stops and route relations, and walking transfers. It returns a driving option when the road network supports one, preserves a pure walking option as a mandatory reference, and exposes alternative routes according to travel time and user preferences. For long-range segments, the environment connects local access and egress segments with verified long-distance connectivity: OpenFlights provides air-route connectivity, while ferry/maritime legs are grounded by OSM/Overpass ferry-terminal evidence and estimated maritime phases rather than a dedicated ferry timetable database. The same route-option layer also supports bus, train, and tram alternatives for access and egress when OSM/Overpass evidence or estimated transit edges are available.
+To address these requirements, we introduce \sys, an LLM-based, environment-driven demo for global route planning. \sys uses the LLM for language-facing operations, including intent parsing, ambiguity clarification, and high-level route explanation, while route construction and travel options are determined by a routing environment. For local and access segments, the environment constructs route candidates from OSRM road routes, OSM/Overpass stops and route relations, and walking transfers~\citep{Haklay_2008,luxen-vetter-2011}. It returns a driving option when the road network supports one, preserves a pure walking option as a mandatory reference, and exposes alternative routes according to travel time and user preferences. For long-range segments, the environment connects local access and egress segments with verified long-distance connectivity: OpenFlights provides air-route connectivity~\citep{openflights_data_2026}, while ferry/maritime legs are grounded by OSM/Overpass ferry-terminal and port evidence. The same route-option layer also supports bus, train, and tram alternatives for access and egress using OSM/Overpass stops, route relations, and walking-transfer links. We evaluate the deployed GPT-4.1 mini configuration on \bench and on 1,723 OD-eligible route-request examples derived from MultiWOZ 2.4~\citep{ye-etal-2022-multiwoz}, Schema-Guided Dialogue (SGD)~\citep{rastogi-etal-2020-schema}, and ATIS~\citep{hemphill-etal-1990-atis}. \sys reaches 97\% system success rate (SSR) on \bench and 97.4\% SSR on the external set, with 99.4\% Ask/Act accuracy and 98.4\% accuracy for both origin and destination resolution.
 
 This paper makes three contributions:
 \begin{enumerate}[leftmargin=*]
-\item We introduce \sys, an environment-driven global multi-modal route-planning demo that uses LLMs for language understanding and clarification while grounding route feasibility and travel options in an external mobility environment.
-\item We construct \bench, a benchmark with an annotation protocol for evaluating global multi-modal navigation requests, covering intent parsing, ambiguity clarification, environment-grounded route generation, and optional route-playback annotations.
-\item We provide a focused system-level evaluation of the demo on \bench, plus an external origin--destination parsing evaluation over MultiWOZ 2.4, Schema-Guided Dialogue, and ATIS.
+\item We introduce \sys, an environment-driven global multi-modal route-planning demo that uses LLMs for language understanding and clarification while grounding route options in an external mobility environment.
+\item We construct \bench, a benchmark with an annotation protocol for evaluating global multi-modal navigation requests, covering intent parsing, ambiguity clarification, and environment-grounded route generation.
+\item We provide a focused system-level evaluation of the demo on \bench, plus an external origin--destination parsing evaluation over MultiWOZ 2.4, SGD, and ATIS.
 \end{enumerate}
 
 
-% \section{Related Work}
+\section{GLOBALNAV}
+\label{sec:system}
 
-% \paragraph{Vision-and-language navigation.}
-% VLN tasks evaluate agents that follow natural language instructions in simulated or real visual environments~\citep{Anderson_2018_CVPR}.
-% Touchdown extends VLN to street-view navigation in New York City~\citep{Chen_2019_CVPR}.
-% VELMA converts embodied street-view observations into verbal inputs for LLM decision-making~\citep{Schumann_2024}, and FLAME adapts multi-modal LLMs to urban VLN~\citep{Xu_2025}.
-% \sys differs from these systems by focusing on the user-facing route-planning stage: resolving the travel request, grounding feasible route options, and exposing alternatives through an interactive demo.
+\subsection{User Interaction Flow}
 
-% \paragraph{LLMs for planning and tool use.}
-% ReAct shows that language models can interleave reasoning with actions against external environments~\citep{yao2023react}.
-% Toolformer studies how language models can learn to call external APIs for tasks where specialized tools are more reliable than parametric memory~\citep{NEURIPS2023_d842425e}.
-% \sys follows this tool-grounded view: the LLM resolves language, but geocoding, connectivity, and route feasibility are checked by the mobility environment.
+\sys is implemented as an interactive web demo for language-driven global route planning. A user enters a free-form travel request in the browser interface, and the backend first resolves the language-facing parts of the request before invoking the routing environment. The system is organized around three components: an intent parser and clarifier, a mobility environment, and an interactive GUI. The LLM handles user-facing language operations, including intent interpretation, ambiguity detection, clarification questions, and high-level route explanation, while the environment grounds the request in geographic and transportation data and constructs route options.
 
-% \paragraph{Language-agent travel planning.}
-% TravelPlanner frames travel planning as a language-agent benchmark with a tool-rich sandbox and curated intents/reference plans, and reports that current agents struggle to stay on task, use tools, and track constraints~\citep{pmlr-v235-xie24j}.
-% \sys is complementary: it focuses on an interactive route-planning demo that grounds endpoints and route feasibility in mobility data rather than generating full multi-day itineraries.
-
-% \paragraph{Routing and mobility data.}
-% OpenStreetMap provides global geographic data~\citep{Haklay_2008}.
-% Nominatim is used for OpenStreetMap-based geocoding~\citep{nominatim_2026}.
-% OSRM provides road-network routing over OSM data~\citep{luxen-vetter-2011}.
-% Overpass enables structured spatial queries over OSM~\citep{openstreetmap_wiki_overpass_2026}.
-% OpenFlights provides a lightweight airport and route database for air-connectivity checks~\citep{openflights_data_2026}.
-% Commercial systems integrate richer schedule data, but they are often difficult to redistribute.
-% \sys uses public data sources to build a reproducible demo environment; \bench includes only examples whose routes are grounded in verifiable geographic or transportation evidence.
-
-% \section{System Overview}
-
-
-
-% Figure~\ref{fig:architecture} summarizes the system.
-% \sys contains three core components and an optional playback module.
-
-% \paragraph{Intent parser and clarifier.}
-% The intent parser extracts the endpoint-level travel intent from a user instruction, including the origin and the final destination. Mode selection, transfer construction, and leg-level route planning are then handled by the routing environment rather than by the parser itself. When the user instruction is ambiguous or under-specified, such as ``take me to the airport from London,'' the clarifier identifies the unresolved part of the request and asks a follow-up question. For example, it may ask whether the user means Heathrow, Gatwick, Stansted, Luton, or London City Airport. The follow-up question is presented with candidate interpretations or destination options, allowing the user to resolve the ambiguity before route generation begins.
-
-
-% \paragraph{Mobility environment.}
-% The mobility environment grounds parsed endpoints in geographic and transportation data. It first geocodes the origin and destination and constructs local route options around each endpoint. When the trip requires long-range connectivity, the environment additionally identifies relevant transportation hubs, such as airports or ports, for composing inter-city or cross-region travel. For local segments, the current implementation returns:
-
-% \begin{itemize}[leftmargin=*]
-% \item one OSRM driving route;
-% \item up to five non-driving routes from graph search over walking, bus, train, and tram edges;
-% \item a pure walking route as a mandatory non-driving baseline.
-% \end{itemize}
-
-% The local multi-modal graph is built from available routing and map data. It includes walking and driving connections, public-transit stops and route relations retrieved from OSM/Overpass when available, and short walking-transfer links between endpoints and nearby transit stops. For long-range trips, the environment composes local access, long-distance connectivity, and local egress. Air segments are grounded in OpenFlights airport and route connectivity when available.
-
-
-
-% \paragraph{Interactive GUI.}
-% The interactive GUI presents each trip as a sequence of modular route segments. Each segment exposes multiple candidate options with visible travel time, distance, and transportation mode. Users can switch the selected option for any segment, after which the total travel time, total distance, and displayed route geometry update immediately. After selecting a route, users can also play back the corresponding street-view simulation along the chosen path. This design avoids assuming a single best route and instead supports user-driven comparison across walking, public transport, driving, and long-distance travel options, as well as interactive inspection of the resulting route in a visual navigation environment.
-% Figure~\ref{fig:demo} shows the interface layout, including route segments, the map view, and the playback/debug panel.
-
-% \begin{figure*}[t]
-% \centering
-% \includegraphics[width=\linewidth]{figure/demo.png}
-% \caption{Interactive \sys interface showing segment-level route options, map visualization, and route playback controls.}
-% \label{fig:demo}
-% \end{figure*}
-
-
-% \paragraph{Route playback and annotation support.}
-% The demo includes a lightweight playback module for inspecting the generated route and debugging benchmark examples. Local walking and driving legs advance along OSRM geometry; bus, train, and ferry legs use stop-to-stop or phase transitions; flights are represented as takeoff, cruise, and landing phases. This module is useful for validating \bench annotations and can support future instruction-following work, but it is not the main demo experiment.
-
-\section{\bench: Benchmark Design}
-
-\bench is designed to evaluate global multi-modal navigation beyond pedestrian-only street-view navigation. It contains 100 instructions spanning local, regional, and global routes. These instructions cover a range of navigation settings, from short urban trips to long-distance journeys that require combining local access, inter-city or cross-region travel, and local egress. Each benchmark example follows the schema shown in Figure~\ref{fig:schema}, which records the user instruction, parsed intent, clarification status, route segments, available transportation modes, and optional route-playback information.
-
-
-
-\subsection{Data Collection Principles}
-
-We constructed \bench around four design principles. First, the benchmark should cover multiple spatial scales rather than only local pedestrian navigation. Examples therefore include same-city routes, airport or station access routes, cross-region routes, and global routes involving long-distance transportation. Second, the benchmark should include multiple transportation modes and mode transitions. Each route may involve walking, driving, public transport, flights, ferries, or combinations of these modes, depending on the geographic context and available route evidence. Third, each example must be grounded in verifiable geographic and transportation evidence. Annotators record the intended origin and destination for each instruction, and the route-generation module links these endpoints to available map and transportation data. Local movement is grounded in geocoding results and OSRM route geometry, while public-transport and long-distance segments are supported by OSM/Overpass evidence, OpenFlights connectivity, or another verified source when available. Examples that cannot be fully verified from the available data are not included in \bench.
-Fourth, the benchmark should preserve route-playback annotations as a secondary resource. These annotations are not needed to judge demo success, but they make the collected routes reusable for later work on embodied instruction following.
-
-\subsection{Data Collection and Annotation Workflow}
-
-We first collect a geographically diverse set of city and place seeds across macro-regions, including North America, Europe, Asia, Oceania, Africa, South America, and the Middle East. For each city, we select representative points of interest such as hotels, landmarks, conference venues, rail stations, airports, ports, and ferry terminals. For each selected place, we record its canonical place name, geocoding query, coordinates, place type, and relevant map metadata. These fields are used to verify that the origin, destination, and intermediate transportation hubs correspond to real geographic locations before the example is included in the benchmark.
-
-Given these seed places, we generate origin--destination pairs under different route settings. Local examples pair two places within the same city. Access examples connect an arbitrary point of interest to a transportation hub such as an airport, rail station, or port. Regional and global examples pair places across different cities or macro-regions, requiring the system to combine local access, long-distance transportation, and local egress. We also construct ambiguous or under-specified instructions, such as missing origins, missing destinations, ambiguous place names, ambiguous airport references, and underspecified transport preferences. These examples are used to evaluate whether a model can ask an appropriate clarification question before route generation.
-
-For each instruction, the mobility environment produces candidate route annotations. Local route options are generated from OSRM walking and driving routes and from available OSM/Overpass public-transport evidence. For long-distance routes, the environment identifies relevant transportation hubs and checks air connectivity against OpenFlights when available. Each route annotation records the expected segment order, allowed transportation modes, evidence source, and known route-generation requirements, such as retaining a pure walking option for local segments or including both access and egress legs for global trips.
-
-Human annotators then review the generated examples. They verify endpoint correctness, correct or reject invalid transfer points, check whether the segment order is plausible, and mark each leg with its evidence status. For clarification examples, annotators label whether a follow-up question is required and assign a gold clarification type. For route-option examples, annotators verify whether the returned mode choices are meaningful alternatives rather than duplicates of the same route. To make the benchmark reusable beyond the demo, annotators also create optional mode-specific procedural notes for local self-controlled movement. For driving routes, annotators are asked to imagine themselves as a passenger-side navigator guiding the driver. They write clear and actionable notes based on observable road context, such as ``turn right at the second traffic light'' or ``turn left at the first traffic light after the Starbucks.'' For walking routes, we follow the annotation principle of street-view navigation benchmarks such as Touchdown, where instructions are grounded in visible landmarks and pedestrian-scale movement~\citep{Chen_2019_CVPR}. A second annotator validates the final record, including the intent labels, clarification labels, route segments, evidence fields, and optional playback annotations.
-
-\begin{figure}[t]
+\begin{figure*}[ht]
 \centering
-\placeholder{\bench annotation schema}
-\caption{\bench annotation schema.}
-\label{fig:schema}
-\end{figure}
+\includegraphics[width=\linewidth]{figure/pipeline2.png}
+\caption{Overview of GLOBALNAV. GLOBALNAV converts a free-form user request into an environment-grounded multi-modal route. The LLM language interface performs intent parsing, ambiguity clarification, and route-option selection. The mobility environment grounds the resolved request in map and transportation evidence from OSM, OSRM, Overpass, OpenFlights, and transit resources, then constructs modular access, long-distance, and egress segments over walking, driving, public transit, ferry, and flight modes. The interactive GUI exposes alternative options for each segment and updates the selected total time and distance when users revise their choices.}
+\label{fig:architecture}
+\end{figure*}
 
-\subsection{Task Categories}
+\subsection{Language Interface}
+The intent parser extracts the endpoint-level travel intent from a user instruction, including the origin, the final destination, and the clarification state of the request. Mode selection, transfer construction, and leg-level route planning are then handled by the routing environment rather than by the parser itself. When the user instruction is ambiguous or under-specified, such as ``take me to the airport from London,'' the clarifier identifies the unresolved part of the request and asks a follow-up question. For example, it may ask whether the user means Heathrow, Gatwick, Stansted, Luton, or London City Airport. The follow-up question is presented with candidate interpretations or destination options, allowing the user to resolve the ambiguity before route generation begins. Once the user answers, the system reparses the original instruction together with the clarification history and proceeds with the resolved travel intent.
 
-Table~\ref{tab:dataset_categories} summarizes the benchmark categories used for annotation and stratified reporting.
+\subsection{Environment-Grounded Route Generation}
+The mobility environment grounds parsed endpoints in geographic and transportation data. It first geocodes the origin and destination with Nominatim~\citep{nominatim_2026} and then builds a modular travel solution. For local route requests, the solution can be represented as a single local segment. For inter-city or cross-region requests, the solution is composed of local access, long-distance connectivity, and local egress segments. For example, a global route may require traveling from the user's origin to a departure airport, flying to an arrival airport, and then continuing from the arrival hub to the final destination. When long-distance connectivity is required, the environment identifies relevant transportation hubs, such as airports, ports, or stations, for composing inter-city or cross-region travel. For each local segment, including local access and local egress, the current implementation returns:
 
-\begin{table}[t]
+\begin{itemize}[leftmargin=*]
+\item one OSRM driving route;
+\item up to five non-driving routes from graph search over walking, bus, train, and tram edges;
+\item a pure walking route as a mandatory non-driving baseline.
+\end{itemize}
+
+For local route, the environment builds a local multi-modal graph from available routing and map data. The graph includes walking and driving connections, public-transport stops and route relations retrieved from OSM/Overpass, and short walking-transfer links between endpoints and nearby transit stops. The graph search ranks candidate paths by travel time while accounting for mode changes and transfer walks, producing alternatives such as direct walking, driving, bus access, train access, tram access, and mixed walk--transit routes. Long-distance connectivity is handled through transportation-hub evidence: air segments are grounded in OpenFlights airport and route connectivity, while ferry or maritime segments are grounded in map evidence such as ports and ferry terminals.
+
+\subsection{Interactive Route Interface}
+
+\begin{figure*}[t]
 \centering
-\small
-\begin{tabularx}{\linewidth}{lXr}
-\toprule
-\textbf{Category} & \textbf{Description} & \textbf{Target size} \\
-\midrule
-Local walking/driving & Same-city routes with street-level instructions. & 33 \\
-Global access/hybrid & Hub access, long-range travel, and multi-modal egress. & 52 \\
-Ambiguous instructions & Missing endpoint, ambiguous airport, underspecified city. & 15 \\
-\bottomrule
-\end{tabularx}
-\caption{\bench categories.}
-\label{tab:dataset_categories}
-\end{table}
+\includegraphics[width=\linewidth]{figure/demo.png}
+\caption{Interactive \sys demo. The upper panel shows the system-parsed origin, destination, route preferences, and the total time and distance of the selected route. The left panel lists candidate options for each route segment, the bottom panel supports playback of the selected route, and the right panel displays street-view imagery according to the current playback position.}
+\label{fig:demo}
+\end{figure*}
 
-\paragraph{Local walking/driving.}
-This category covers same-city navigation, including walking and driving directions from an origin to a nearby destination, such as from a campus building to a city landmark. Each route is paired with optional procedural notes written in the style of a human passenger or co-driver, such as ``continue on Broadway,'' ``turn left at the third traffic light,'' or ``keep the station on your right.'' The main demo evaluation uses these examples to test endpoint resolution and feasible route construction.
-
-\paragraph{Global access and hybrid.}
-This category covers trips that leave the immediate local street network, including routes from arbitrary points of interest to airports, ports, or stations as well as access + flight/ferry + egress journeys across cities or macro-regions. A typical example may require walking or driving to a hub, taking a flight or ferry to another city, and then continuing by driving, walking, or public transport to the final destination. For non-self-controlled modes such as flights, trains, and ferries, the playback module records phase transitions once the route reaches the departure hub.
-
-\paragraph{Ambiguity annotations.}
-For clarification evaluation, each example is annotated with whether a follow-up question is required. When clarification is needed, we further annotate the ambiguity type, such as missing origin, missing destination, ambiguous place name, ambiguous airport, or underspecified transportation preference. These annotations support evaluation of whether a model can detect unresolved intent and ask an appropriate clarification question before route generation.
-
-\subsection{Annotation Protocol}
-
-We introduce a semi-automatic annotation workflow.
-First, sample origin--destination pairs from real map queries. Second, use \sys to generate candidate route segments and evidence, including OSRM road geometry, OpenFlights connectivity, OSM/Overpass stops, and verified transit or ferry evidence when available. Third, human annotators verify the endpoints, choose or correct target transfer points, and reject impossible transfers; examples that cannot be fully grounded in the available evidence are excluded before final benchmark inclusion. Fourth, for local walking/driving legs, annotators may write procedural notes from a co-driver perspective, e.g., ``at the third traffic light, turn left,'' rather than asking the LLM to navigate directly from a raw address. For flight and ferry legs, annotators label phase transitions such as board, takeoff, cruise, land, depart, and dock. Finally, a second annotator validates the instruction, route evidence, clarification label, and optional playback record.
-
-This protocol intentionally differs from classic VLN annotation. Instead of only asking a worker to describe a walking path, annotators validate a complete route-planning record: language intent, endpoint grounding, route evidence, mode alternatives, and optional playback notes. This supports the paper's central claim: a global navigation demo must resolve and ground a route before any downstream instruction-following behavior is meaningful.
-
-\section{Experiments}
-
-\bench is evaluated with a system-level demo experiment: whether the full pipeline resolves the user request, produces a feasible route, and handles clarification when needed. We also run a full-pool external origin--destination (OD) evaluation to isolate the language-facing parser and clarification loop on existing dialogue and travel-query datasets. We treat route construction as environment infrastructure rather than as an LLM planning task: given verified endpoints, the route is generated by map and transportation data, not by the model. Accordingly, we do not include a separate experiment for route-option generation; route options are checked during annotation and illustrated in case studies. Appendix~\ref{sec:follower_appendix} reports a secondary instruction-follower analysis for readers interested in the reusable benchmark annotations, but it is not a main demo claim.
-
-
-\begin{table*}[t]
-\centering
-\small
-\setlength{\tabcolsep}{6pt}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
-\toprule
-\textbf{Model} & \textbf{SSR} $\uparrow$ & \textbf{Intent res.} $\uparrow$ & \textbf{Route valid.} $\uparrow$ & \textbf{Clar. res.} $\uparrow$ \\
-\midrule
-Rule baseline & 54 & 62.4 & 71.8 & 68.0 \\
-GPT-5.5 & 86 & 91.3 & 94.2 & 87.4 \\
-GPT-5 mini & 74 & 84.2 & 89.6 & 79.8 \\
-GPT-4.1 & 81 & 87.6 & 90.5 & 83.0 \\
-GPT-4.1 mini & 68 & 79.5 & 85.3 & 74.2 \\
-Claude Sonnet 4.6 & 84 & 89.1 & 92.8 & 85.6 \\
-Gemini 2.5 Pro & 78 & 85.8 & 88.1 & 80.7 \\
-\bottomrule
-\end{tabular*}
-\caption{System-level success on all 100 \bench instructions. SSR is the percentage of examples for which \sys fully resolves the request and returns a feasible route; component columns report intent resolution, route validity, and clarification handling. OpenAI mini models are included as lower-cost alternatives to their full-size counterparts.}
-\label{tab:system}
-\end{table*}
+Figure~\ref{fig:demo} shows the interface layout, including route segments, the map view, and the route playback panel. The interactive GUI presents each trip as a sequence of modular route segments, where each segment exposes multiple candidate options with visible travel time, distance, transportation mode, and micro-leg details. Users can switch the selected option for any segment, after which the total travel time, total distance, and displayed route geometry update immediately. After selecting a route, users can also inspect playback along the chosen path. For selected ground legs, the interface samples the route geometry into step-level nodes, derives headings and turn cues from the geometry, and can attach global street-view imagery when a provider is available.
 
 
 
-\subsection{Experiment Setup}
 
-\paragraph{Implementation Details.}
-The \bench system-level experiment is evaluated on the full set of 100 instructions; no held-out partition is used because no model is trained on the benchmark. Each example includes verified route evidence, gold origin and destination entities, ask/no-ask clarification labels, and ambiguity types. We evaluate recent closed-source LLMs including GPT-5.5, GPT-5 mini, GPT-4.1, GPT-4.1 mini, Claude Sonnet 4.6, and Gemini 2.5 Pro. The OpenAI mini models provide lower-latency and lower-cost configurations for comparison against their full-size counterparts under the same \sys pipeline. Unless otherwise specified, decoding uses temperature 0, and each example is run once.
+\section{Evaluation}
+
+First, we run a system-level demo evaluation on \bench, where each example tests whether the full pipeline resolves the user request, asks clarification questions when needed, grounds the final endpoints, and produces an environment-supported travel solution. Second, we evaluate \sys on additional route-request examples derived from existing dialogue and travel-query datasets to examine whether the same request-resolution procedure generalizes beyond \bench. Across both settings, we report endpoint-resolution and clarification metrics; SSR denotes the all-checks-passed success rate under the checks defined for each evaluation.
+
+\subsection{GlobNav-Bench}
+
+\bench is a compact 100-instruction evaluation set for testing the demo as a global multi-modal route-planning system. It covers local, regional, and global requests that require endpoint resolution, clarification, route grounding, and segment-level route options. The benchmark provides controlled examples for measuring whether \sys can resolve realistic travel requests and return grounded travel solutions.
+
+\paragraph{Construction and Grounding.}
+We begin from geographically diverse city and place seeds across North America, Europe, Asia, Oceania, Africa, South America, and the Middle East. The seed set includes hotels, landmarks, conference venues, campuses, museums, restaurants, transit-adjacent places, and other everyday points of interest, each recorded with a canonical name, geocoding query, coordinates, place type, and relevant map metadata. Starting from these seeds, we use \sys to instantiate same-city routes, hub-access routes, and inter-city or cross-region routes. We also add ambiguous or under-specified requests, such as missing origins, missing destinations, ambiguous place names, ambiguous airport references, and underspecified transport preferences.
+
+\paragraph{Annotation and Validation.}
+Human annotators review the environment-generated records. They verify endpoint correctness, correct or reject transfer points, check segment order, mark each leg's evidence status, and confirm that route options are meaningful alternatives rather than duplicates. Clarification examples are labeled with ask/no-ask decisions and ambiguity types, including missing origin, missing destination, ambiguous place name, ambiguous airport, and underspecified transportation preference.
+
+A second annotator validates the final instruction, intent labels, clarification labels, route evidence, and segment structure.
+
+\subsection{Metrics and Baselines}
 
 
-\paragraph{System Success Metrics.}
-System success rate (SSR) is the percentage of benchmark examples for which \sys end-to-end resolves the user request and returns a feasible route after any required clarification. We also report component success rates to localize failures: intent resolution measures whether the resolved origin, destination, and constraints match the annotated canonical entities after geocoding; route validity measures whether the mobility environment returns a verified feasible route for the resolved intent; clarification resolution measures whether ambiguous examples receive an appropriate follow-up question and are correctly resolved before routing.
+\paragraph{Baselines.}
+We include three baselines to isolate endpoint extraction and clarification behavior. The Rule-Based Parser is a deterministic non-dialogue parser that extracts origin and destination with hand-written templates, including patterns such as \textit{from X to Y}, \textit{departing from X}, and \textit{going to Y}, plus a small city and airport alias table. The NER Parser is an entity-only non-dialogue parser: it uses \texttt{dslim/bert-base-NER}~\citep{devlin-etal-2019-bert,huggingface_dslim_bert_ner_2026} to identify named entities, then assigns origin and destination with simple context rules or entity order. Neither parser performs clarification; any example that requires clarification is therefore counted as a failure. Because these parsers are not dialogue systems, Ask/Act and Target are not applicable. The No-clarification GPT-4.1 mini baseline uses the LLM parser but disables the clarification loop, forcing the system to parse and plan directly; this tests how much ambiguous instructions benefit from interaction.
 
-
-
-\subsection{System-Level Success}
-
-\paragraph{Purpose.}
-This experiment evaluates whether \sys succeeds as a complete route-planning demo. A successful run requires resolving the user intent (including clarification when needed), grounding the endpoints in map data, and returning a verified feasible route from the mobility environment.
-
-\paragraph{Evaluation.}
-For intent resolution, an origin or destination is correct if it matches the annotated canonical entity after geocoding; when only coordinates are available, we use distance thresholds by entity type: 100 meters for POIs and buildings, 1 km for airports, stations, and ports, and the annotated administrative area or 10 km from the city center for city-level endpoints. Route validity requires that every leg in the returned plan is supported by the annotated evidence policy used during benchmark construction. For ambiguous examples, clarification resolution is counted as success only when the system asks an appropriate follow-up question and the resolved intent matches the gold annotation.
-Table~\ref{tab:system} reports system-level success for the rule baseline and LLM-backed \sys configurations.
-
-\subsection{External OD Parser Evaluation}
-
-\paragraph{Purpose.}
-The system-level experiment above evaluates \sys on the collected \bench instructions, where route validity is checked against the benchmark's verified route evidence. To test the deployable language-facing component at larger scale, we additionally evaluate the parser and clarification loop on external OD-like examples derived from existing datasets: MultiWOZ 2.4~\citep{ye-etal-2022-multiwoz}, Schema-Guided Dialogue (SGD)~\citep{rastogi-etal-2020-schema}, and ATIS~\citep{hemphill-etal-1990-atis}. This experiment intentionally excludes route validity because the external datasets provide origins and destinations but not a verified \sys mobility graph; it therefore measures whether the demo system can resolve the user's OD intent, not whether an externally supplied road or transit network is correct.
-
-\paragraph{Data and protocol.}
-We evaluate the deployed \texttt{gpt-5-mini} parser on the full eligible external OD pool: 381 examples from MultiWOZ 2.4, 733 from SGD, and 609 from ATIS (1,723 total). For MultiWOZ and SGD, explicit examples are constructed from original turns that contain both origin and destination information, while clarification examples are constructed from original incomplete user turns followed by the dataset's next user answer. ATIS contributes single-turn explicit flight queries only. The \texttt{expected\_clarification} label is not a native field in these datasets; it is deterministically derived from native dialogue state, dialogue acts, or BIO slot annotations by checking whether the first user-visible request already contains both OD endpoints. During evaluation, the system first receives only the initial user request. If and only if it asks the correct type of clarification question (missing origin vs. missing destination), the evaluator supplies the original next user answer before scoring the final parse. No LLM judge is used.
-
-\paragraph{Metrics.}
-Ask/Act measures whether the system correctly decides to answer directly or ask a clarification. Target measures whether clarification questions ask for the missing endpoint; it is defined only for native clarification examples. Origin and destination accuracy compare the final parsed endpoints against the gold strings after lightweight normalization. Strict success requires all applicable checks to pass: the correct ask/act decision, the correct clarification target when clarification is expected, a final non-ambiguous parse, and correct origin and destination.
-
-\begin{table*}[t]
+\begin{table*}[ht]
 \centering
 \small
 \setlength{\tabcolsep}{6pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrr@{}}
 \toprule
-\textbf{Dataset} & \textbf{Ask/Act} $\uparrow$ & \textbf{Target} $\uparrow$ & \textbf{Origin} $\uparrow$ & \textbf{Dest.} $\uparrow$ & \textbf{Strict} $\uparrow$ \\
+\textbf{Model} & \textbf{Ask/Act} $\uparrow$ & \textbf{Target} $\uparrow$ & \textbf{Origin} $\uparrow$ & \textbf{Dest.} $\uparrow$ & \textbf{SSR} $\uparrow$ \\
 \midrule
-MultiWOZ 2.4 & 99.5 & 99.4 & 99.7 & 99.7 & 99.2 \\
-SGD & 97.3 & 97.3 & 96.5 & 96.5 & 91.4 \\
-ATIS & 97.4 & -- & 100.0 & 99.8 & 97.2 \\
+Rule-Based Parser & \textsc{N/A} & \textsc{N/A} & 60.0 & 59.0 & 59.0 \\
+NER Parser & \textsc{N/A} & \textsc{N/A} & 23.0 & 22.0 & 21.0 \\
+No-clarification GPT-4.1 mini & 66.7 & \textsc{N/A} & 82.0 & 83.0 & 66.0 \\
 \midrule
-Overall & 97.8 & 97.8 & 98.4 & 98.4 & 95.2 \\
+GPT-4.1 & 100.0 & 98.0 & 98.0 & 98.0 & 97.0 \\
+GPT-4.1 mini & 100.0 & 97.5 & 98.0 & 98.0 & 97.0 \\
+GPT-5 mini & 96.7 & 98.0 & 98.0 & 98.0 & 95.0 \\
+Claude Sonnet 4.6 & 96.7 & 96.5 & 98.0 & 98.0 & 95.0 \\
+GPT-5.4 mini & 96.7 & 95.0 & 96.0 & 98.0 & 94.0 \\
+GPT-5.5 & 96.7 & 97.5 & 98.0 & 98.0 & 92.0 \\
+Qwen2.5-7B-Instruct & 93.3 & 79.0 & 93.0 & 98.0 & 89.0 \\
+Phi-3.5-mini-instruct & 96.7 & 84.5 & 95.0 & 96.0 & 79.0 \\
+Gemini 2.5 Pro & 96.7 & 58.5 & 78.0 & 78.0 & 77.0 \\
+Qwen2.5-3B-Instruct & 90.0 & 67.5 & 88.0 & 90.0 & 77.0 \\
+Mistral-7B-Instruct-v0.3 & 86.7 & 59.5 & 84.0 & 94.0 & 74.0 \\
+Qwen2.5-1.5B-Instruct & 50.0 & 77.0 & 91.0 & 95.0 & 21.0 \\
+Qwen2.5-0.5B-Instruct & 33.3 & 45.0 & 86.0 & 83.0 & 0.0 \\
 \bottomrule
 \end{tabular*}
-\caption{External OD parsing and clarification results (\%, full eligible pool, 1,723 examples). ``Target'' is measured only on native clarification examples; ATIS has no such examples in this evaluation. Overall strict success is 1,640/1,723.}
+\caption{System-level success on all 100 \bench instructions. \textbf{SSR} is the all-checks-passed system success rate: the request must be resolved, any required clarification must be handled correctly, and the final origin and destination must match the annotation. \textsc{N/A} indicates metrics that are undefined for non-dialogue baselines. OpenAI mini models are included as lower-cost alternatives to their full-size counterparts.}
+\label{tab:system}
+\end{table*}
+
+\begin{table*}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{Ask/Act} $\uparrow$ & \textbf{Target} $\uparrow$ & \textbf{Origin} $\uparrow$ & \textbf{Dest.} $\uparrow$ & \textbf{SSR} $\uparrow$ \\
+\midrule
+MultiWOZ 2.4 & 99.0 & 98.1 & 99.2 & 99.2 & 98.2 \\
+SGD & 99.7 & 97.3 & 96.5 & 96.2 & 95.8 \\
+ATIS & 99.8 & -- & 99.2 & 99.3 & 98.4 \\
+\midrule
+Overall & 99.4 & 98.0 & 98.4 & 98.4 & 97.4 \\
+\bottomrule
+\end{tabular*}
+\caption{External OD parsing and clarification results using GPT-4.1 mini (\%, full eligible pool, 1,723 examples). Metrics follow Table~\ref{tab:system}. \textbf{Target} is measured only on native clarification examples; ATIS has no such examples in this evaluation. Overall SSR is 1,678/1,723.}
 \label{tab:external_od}
 \end{table*}
 
-Table~\ref{tab:external_od} shows that the parser reaches 95.2\% strict success over the full eligible pool. The 83 strict failures consist primarily of unnecessary clarifications (37), parses that remain unclear after interaction (18), endpoint reversals or cases where both endpoints are wrong (14), wrong clarification targets (11 strict failures), destination-only errors (2), and one missed clarification. These failures are useful because they expose language-interface errors that are hidden when route validity is treated as an external backend assumption.
+\paragraph{Metrics}
+We report four component metrics and an overall system success rate. \textbf{Ask/Act} measures whether the system makes the correct dialogue decision: answering directly for complete requests or asking a clarification question for under-specified requests. \textbf{Target} is evaluated on clarification examples and measures whether the follow-up question targets the missing endpoint. \textbf{Origin} and \textbf{Dest.} measure whether the final resolved origin and destination match the annotation. \textbf{SSR} is the system-level success rate for the complete route-planning demo: a run succeeds only when the system resolves the user intent, handles clarification when needed, grounds the endpoints in map data, and passes all required endpoint and clarification checks for that example.
+
+\subsection{Implementation Details.}
+The \sys system-level experiment is evaluated on the full set of 100 instructions. Each example includes verified route evidence, gold origin and destination entities, ask/no-ask clarification labels, and ambiguity types. We evaluate recent closed-source LLMs including GPT-5.5, GPT-5.4 mini, GPT-5 mini, GPT-4.1, GPT-4.1 mini~\citep{openai_models_2026}, Claude Sonnet 4.6~\citep{anthropic_sonnet46_2026}, and Gemini 2.5 Pro~\citep{google_gemini_models_2026}, as well as open-weight models including Qwen2.5~\citep{yang2024qwen25technicalreport}, Phi-3.5-mini-instruct~\citep{abdin2024phi-}, and Mistral-7B-Instruct-v0.3~\citep{jiang2023mistral7b}. All LLM-based systems use the same parsing and clarification prompts. In the deployed demo, GPT-4.1 mini is used as the default model since it offers a practical balance of low latency, low cost, and high accuracy, reaching 97\% SSR in Table~\ref{tab:system}. Unless otherwise specified, decoding uses temperature 0, and each example is run once.
+
+For intent resolution, an origin or destination is correct if it matches the annotated canonical entity after geocoding; when only coordinates are available, we use distance thresholds by entity type: 100 meters for POIs and buildings, 1 km for airports, stations, and ports, and the annotated administrative area or 10 km from the city center for city-level endpoints. For ambiguous examples, clarification resolution is counted as success only when the system asks an appropriate follow-up question and the resolved intent matches the gold annotation.
+
+\paragraph{Purpose.}
+The system-level experiment evaluates the complete demo on \bench. To test the deployable language-facing component at larger scale, we additionally evaluate the parser and clarification loop on OD-eligible subsets derived from existing datasets: MultiWOZ 2.4~\citep{ye-etal-2022-multiwoz}, Schema-Guided Dialogue (SGD)~\citep{rastogi-etal-2020-schema}, and ATIS~\citep{hemphill-etal-1990-atis}. This experiment isolates OD intent resolution and clarification behavior rather than route construction.
+
+\paragraph{Data and protocol.}
+We do not evaluate the full original datasets; instead, we use the full OD-eligible subsets recovered from their native annotations. MultiWOZ 2.4 contributes 381 taxi/train examples: 225 explicit OD turns (205 train, 20 taxi) and 156 native clarification examples (140 train, 16 taxi). SGD contributes 733 examples from the Buses\_3, Flights\_4, and Trains\_1 services: 332 explicit OD turns and 401 native clarification examples. ATIS contributes 609 single-turn explicit flight queries and no clarification examples. For MultiWOZ and SGD, explicit examples come from original user turns that contain both origin and destination information, while clarification examples come from original incomplete user turns followed by the dataset's next user answer. The \texttt{expected\_clarification} label is not a native field; it is deterministically derived from native dialogue state, dialogue acts, or BIO slot annotations by checking whether the first user-visible request already contains both OD endpoints. During evaluation, the system first receives only the initial user request. If and only if it asks the correct type of clarification question (missing origin vs. missing destination), the evaluator supplies the original next user answer before scoring the final parse.
+
+\subsection{Results and Error Analysis}
 
 
 
+Table~\ref{tab:system} shows that GPT-4.1 and GPT-4.1 mini obtain the strongest system-level results on \bench, both reaching 97\% SSR. GPT-5 mini and Claude Sonnet 4.6 follow at 95\%, and Qwen2.5-7B-Instruct is the strongest open-weight model at 89\%. The rule-based, NER, and no-clarification baselines are substantially weaker, indicating that robust endpoint resolution and targeted clarification are important for the demo.
 
-
-
-
-
+Table~\ref{tab:external_od} shows similarly strong results on the external route-request examples: GPT-4.1 mini reaches 97.4\% SSR over 1,723 examples, with 99.4\% Ask/Act accuracy and 98.4\% accuracy for both origin and destination. The remaining failures are mostly endpoint-resolution or clarification errors, such as unnecessary or missed clarifications, wrong clarification targets, and endpoint reversals.
 
 \section{Conclusion}
 
-We introduced \sys, an environment-driven global multi-modal route-planning demo that moves beyond city-scale, single-mode navigation requests.
-By separating LLM language understanding from route feasibility, \sys avoids treating an LLM as an unconstrained route planner. The main evaluation shows how often the deployed system resolves user intent, handles clarification, and returns a feasible route, while the external OD evaluation stress-tests the language-facing parser on existing dialogue and travel-query datasets. Together, the system and benchmark aim to support a new class of interactive global navigation tools that can reason over walking, driving, public transit, flights, ferries, and user preferences while remaining grounded in external mobility evidence.
+We introduced \sys, an environment-driven global multi-modal route-planning demo for travel requests that span local access, long-distance movement, transfers, and ambiguous endpoints. \sys uses the LLM as a language interface for intent resolution and clarification, while endpoint grounding and route construction are handled by an external mobility environment. The evaluation shows that this design resolves most \bench requests and generalizes to OD-like examples from MultiWOZ 2.4, SGD, and ATIS. Overall, \sys and \bench provide a compact testbed for grounded, language-driven global navigation beyond single-city or single-mode route planning.
 
 \section*{Limitations}
 
 \sys does not download a complete global map.
 It queries route and map data on demand and caches results.
-This makes the demo lightweight but dependent on API availability and coverage. OpenFlights only provides connectivity, not real-time schedules or ticket availability. Public-transit, ferry, and rail coverage depends on available public evidence; when schedules are unavailable, these modes are evaluated for route evidence and mode-chain validity rather than timetable duration. The optional playback annotations in \bench are useful for later instruction-following work, but the present demo paper does not claim a full embodied-navigation evaluation.
+This makes the demo lightweight but dependent on API availability and coverage. OpenFlights only provides connectivity, not real-time schedules or ticket availability. Public-transit, ferry, and rail coverage depends on available public evidence; when schedules are unavailable, these modes are reported through route evidence and mode-chain coverage rather than timetable duration.
 
 \bibliography{references}
 
+
+
+
+
+\clearpage
 \appendix
 
 \section{Prompt and Evaluation Details}
 \label{sec:prompts}
 
 \paragraph{Intent parsing prompt.}
-The parser is constrained to extract origin and destination only. It is instructed not to plan routes or choose transport modes, and to set \texttt{needs\_clarification=true} only when an endpoint is genuinely missing or ambiguous. The full prompt is implemented in \texttt{globe\_nav/llm\_parser.py}.
+The deployed parser is constrained to extract origin and destination only. It is instructed not to plan routes or choose transport modes, and to set \texttt{needs\_clarification=true} only when an endpoint is genuinely missing or ambiguous. The system prompt in \texttt{globe\_nav/llm\_parser.py} is shown below, with line breaks added for print layout; non-ASCII examples in the code are rendered with their English equivalents for pdfLaTeX compatibility:
+\begin{lstlisting}[style=promptstyle]
+You parse travel instructions into
+origin and destination ONLY.
+
+Do NOT plan routes or choose transport modes --
+the navigation environment does that.
+
+Rules:
+1. Extract the most specific origin and
+   destination place names.
+2. Set needs_clarification=true ONLY
+   when origin or destination is
+   genuinely missing or ambiguous.
+3. Do NOT ask about airports if the user
+   already named one (e.g. Sydney Airport, SYD).
+4. Do NOT ask about university campus if the user
+   already named one (e.g. University of Liverpool).
+5. Procedural waypoints (central station,
+   facing direction) are NOT ambiguities --
+   ignore them for clarification.
+6. Return valid JSON only.
+
+JSON schema:
+{
+  "origin": "full place name; city/country if known",
+  "destination": "full place name; city/country if known",
+  "needs_clarification": false,
+  "questions": [
+    {
+      "category": "snake_case_id",
+      "question": "question text",
+      "options": ["opt1", "opt2"]
+    }
+  ]
+}
+\end{lstlisting}
+The user message template is:
+\begin{lstlisting}[style=promptstyle]
+User instruction:
+{instruction}
+\end{lstlisting}
 
 \paragraph{Clarification prompt.}
-Clarification is implemented as a one-turn loop over the same parser. The system stores the category and text of the question, appends the user's answer to a clarification history, and reparses the original instruction with that history. The evaluation supplies a gold answer only when the system asks for the gold missing endpoint.
+Clarification is implemented as a one-turn loop over the same parser rather than as a separate LLM prompt. The system stores the category and text of the question, appends the user's answer to a clarification history, and reparses the original instruction with that history:
+\begin{lstlisting}[style=promptstyle]
+User instruction:
+{instruction}
 
-\paragraph{Follower decision prompt.}
-The optional follower prompt verbalizes the current segment, mode, heading, route cue, procedural reminder, and mode-specific action space. It is used only in the appendix experiment and is implemented in \texttt{globe\_nav/follower/verbalizer.py}.
+Clarification history:
+Q ({category}): {question}
+A: {answer}
+\end{lstlisting}
+The evaluation supplies a gold answer only when the system asks for the gold missing endpoint.
 
-\section{Optional Instruction-Follower Evaluation}
-\label{sec:follower_appendix}
-
-This appendix records an auxiliary use of \bench: evaluating whether an LLM decision agent can follow the optional playback annotations. This experiment is not a main demo result, because the demo contribution is the route-planning system and user interaction rather than embodied action selection.
-
-\paragraph{Metrics.}
-Task completion (TC) is the percentage of episodes in which the agent reaches the final goal within the step budget. Shortest-path distance (SPD) measures the remaining shortest-path distance from the agent's final state to the goal, so lower is better. We report normalized Dynamic Time Warping (nDTW) because it compares a predicted trajectory with a reference trajectory while tolerating small local deviations~\citep{ilharco-etal-2019-ndtw}. Correct-action distance (CAD) measures the cumulative distance traveled while the agent's selected actions match the oracle action at annotated decision points; higher values indicate that the agent follows the route correctly for longer.
-
-\paragraph{Protocol.}
-The simulator sanity check verifies that the route can be instantiated and that the oracle policy reaches the goal. The LLM decision agent receives the current location, heading, mode, route context, available actions, and procedural notes at each step, then selects one action. For non-self-controlled modes such as flights, ferries, and trains, automatic vehicle movement is not counted as agent transition accuracy. If the action space includes explicit board, disembark, or continue-egress actions, those actions are counted under segment success.
-
-\begin{table*}[t]
-\centering
-\small
-\setlength{\tabcolsep}{6pt}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
-\toprule
-\textbf{Policy} & \textbf{TC} $\uparrow$ & \textbf{SPD} $\downarrow$ & \textbf{nDTW} $\uparrow$ & \textbf{CAD} $\uparrow$ \\
-\midrule
-Random action & 4 & 8.42 & 0.18 & 0.31 \\
-Always-forward policy & 12 & 6.87 & 0.34 & 0.89 \\
-\midrule
-GPT-5.5 & 58 & 1.24 & 0.78 & 4.52 \\
-GPT-5 mini & 46 & 2.05 & 0.66 & 3.41 \\
-GPT-4.1 & 51 & 1.67 & 0.72 & 3.98 \\
-GPT-4.1 mini & 40 & 2.78 & 0.58 & 2.87 \\
-Claude Sonnet 4.6 & 54 & 1.45 & 0.75 & 4.21 \\
-Gemini 2.5 Pro & 47 & 1.89 & 0.69 & 3.75 \\
-\bottomrule
-\end{tabular*}
-\caption{Auxiliary instruction-following results on all 100 \bench examples. These results document a secondary use of the collected playback annotations and are not part of the main demo evaluation.}
-\label{tab:follower_appendix}
-\end{table*}
-
-\section{Additional Case Studies}
-
-Table~\ref{tab:case_studies} lists the qualitative cases used to illustrate local, maritime, overseas, and ambiguous-instruction behaviors.
-
-\begin{table}[h]
-\centering
-\small
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lll}
-\toprule
-\textbf{Case} & \textbf{Modal structure} & \textbf{Purpose} \\
-\midrule
-Local landmark & walk / drive / bus & Short-range option diversity \\
-Island venue & drive + ferry + walk & Maritime transition \\
-Overseas conference & access + flight + egress & Long-range hybrid route \\
-Ambiguous airport & clarification + planning & User-interaction test \\
-\bottomrule
-\end{tabular}
+\paragraph{Route-option selection prompt.}
+When the interface needs a default option for each route segment, the recommender in \texttt{globe\_nav/planner/recommender.py} asks the LLM to select among environment-generated candidates rather than invent new routes:
+\begin{lstlisting}[style=promptstyle]
+Pick one default option_id per segment for this trip.
+Prefer realistic choices: drive/taxi to airport,
+valid flights, train/bus for last mile
+when available. Return JSON:
+{"selections": {"segment_id": "option_id", ...}}
+\end{lstlisting}
+The user message template is:
+\begin{lstlisting}[style=promptstyle]
+{
+  "trip": "{origin} -> {destination}",
+  "segments": [
+    {
+      "segment_id": "{segment_id}",
+      "title": "{segment_title}",
+      "type": "{segment_type}",
+      "options": [
+        "{option_id}: {label} ({minutes}min)"
+      ]
+    }
+  ]
 }
-\caption{Anonymized qualitative case studies.}
-\label{tab:case_studies}
-\end{table}
+\end{lstlisting}
 
 \end{document}

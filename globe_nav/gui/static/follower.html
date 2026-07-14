@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +11,7 @@
 <body>
   <div class="follower-shell">
     <nav class="links">
-      <a href="/">← 分段规划</a>
+      <a href="/">← Planner</a>
       <span>GLOBALNAV</span>
     </nav>
 
@@ -19,7 +19,7 @@
       <div>
         <p class="eyebrow">Global multi-modal navigation</p>
         <h1>Instruction Follower</h1>
-        <p class="subtitle">全球路线仿真</p>
+        <p class="subtitle">Global route simulation</p>
       </div>
       <div class="header-metrics" aria-label="route totals">
         <div>
@@ -34,12 +34,12 @@
     </header>
 
     <section class="command-card">
-      <textarea id="instruction" rows="5">我在悉尼科技大学UTS，面朝乔治街。先走到悉尼机场，坐飞机到曼彻斯特，出机场后坐火车到利物浦，最后走到利物浦大学。</textarea>
+      <textarea id="instruction" rows="5">I am at the University of Technology Sydney, facing George Street. First walk to Sydney Airport, fly to Manchester, take the train to Liverpool after leaving the airport, and finally walk to the University of Liverpool.</textarea>
       <div class="ctrl-row">
-        <label><input type="checkbox" id="ruleBased" checked /> 规则策略</label>
-        <label><input type="checkbox" id="noLlm" /> 离线分解（无 LLM）</label>
-        <label><input type="checkbox" id="streetview" checked /> 街景图像</label>
-        <button id="prepareBtn" type="button">准备路线</button>
+        <label><input type="checkbox" id="ruleBased" checked /> Rule-based policy</label>
+        <label><input type="checkbox" id="noLlm" /> Offline decomposition (no LLM)</label>
+        <label><input type="checkbox" id="streetview" checked /> Street View images</label>
+        <button id="prepareBtn" type="button">Prepare Route</button>
       </div>
       <div class="status-row">
         <p id="svHint" class="sv-hint"></p>
@@ -72,7 +72,7 @@
             <img id="svImage" alt="street view" />
             <div id="svPlaceholder" class="sv-placeholder">
               <span>Street View</span>
-              <p>准备路线后显示当前位置街景</p>
+              <p>Street View appears here after the route is prepared.</p>
             </div>
           </div>
           <div id="svMeta" class="sv-meta"></div>
@@ -89,8 +89,8 @@
 
         <div id="playback" class="playback hidden">
           <div class="play-ctrl">
-            <button id="stepBtn" type="button">单步 →</button>
-            <button id="playBtn" type="button">▶ 播放</button>
+            <button id="stepBtn" type="button">Step →</button>
+            <button id="playBtn" type="button">▶ Play</button>
             <span id="stepLabel">0 / 0</span>
           </div>
           <input type="range" id="scrubber" min="0" max="0" value="0" />
@@ -104,8 +104,8 @@
     <div class="clarify-box">
       <p id="clarifyQuestion"></p>
       <div id="clarifyOptions"></div>
-      <input id="clarifyInput" type="text" class="hidden" placeholder="输入回答" />
-      <button id="clarifySubmit" type="button">确认</button>
+      <input id="clarifyInput" type="text" class="hidden" placeholder="Enter your answer" />
+      <button id="clarifySubmit" type="button">Confirm</button>
     </div>
   </div>
 

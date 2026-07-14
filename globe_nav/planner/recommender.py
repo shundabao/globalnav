@@ -34,7 +34,7 @@ class SegmentRecommender:
             best = min(seg.options, key=lambda o: (len(o.micro_legs), o.duration_min))
         else:
             # prefer drive for airport access if similar time, else fastest
-            drive = next((o for o in seg.options if o.label == '驾车'), None)
+            drive = next((o for o in seg.options if o.label == 'Drive'), None)
             fastest = min(seg.options, key=lambda o: o.duration_min)
             best = drive if drive and drive.duration_min < fastest.duration_min * 1.5 else fastest
         seg.default_option_id = best.option_id

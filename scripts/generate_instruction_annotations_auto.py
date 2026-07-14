@@ -103,7 +103,7 @@ def option_from_leg(seg_id: str, leg: DetailedLeg) -> SegmentOption:
         f'{leg.from_lat:.5f},{leg.from_lon:.5f}->{leg.to_lat:.5f},{leg.to_lon:.5f}'
     )
     opt_id = f'{seg_id}_{hashlib.md5(signature.encode()).hexdigest()[:8]}'
-    names = {'walk': '步行', 'drive': '驾车'}
+    names = {'walk': 'walk', 'drive': 'drive'}
     return SegmentOption(
         option_id=opt_id,
         label=names.get(leg.mode, leg.mode.title()),

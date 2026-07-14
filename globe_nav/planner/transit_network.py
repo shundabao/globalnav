@@ -49,8 +49,9 @@ class TransitNetwork:
 
 
 class TransitNetworkBuilder:
-    def __init__(self, cache_dir: str = 'data/cache'):
+    def __init__(self, cache_dir: str = 'data/cache', use_online: bool = True):
         self.cache = DiskCache(cache_dir)
+        self.use_online = use_online
         self._last_request = 0.0
 
     def build_corridor_network(self, lat1, lon1, lat2, lon2, padding_km=3.0) -> TransitNetwork:
@@ -162,6 +163,8 @@ class TransitNetworkBuilder:
         return 'train'
 
     def _overpass(self, query):
+        if not self.use_online:
+            return {'elements': []}
         elapsed = time.time() - self._last_request
         if elapsed < 2.0:
             time.sleep(2.0 - elapsed)

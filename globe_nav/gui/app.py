@@ -4,6 +4,7 @@ import json
 import math
 import os
 import random
+import re
 import sys
 import time
 import uuid
@@ -90,6 +91,31 @@ def _instruction_action(instruction: str, mode: str) -> str | None:
     if 'right' in text or '右' in text:
         return 'right'
     return None
+
+
+def _clean_route_place(value: str | None) -> str:
+    text = str(value or '').strip()
+    text = re.sub(r'^(origin|destination)\s*:\s*', '', text, flags=re.IGNORECASE)
+    return text.strip(' \t\r\n.!?')
+
+
+def _parse_route_places(instruction: str) -> tuple[str, str]:
+    """Extract a simple "from A to B" route request for demo-friendly fallback."""
+    match = re.search(r'\bfrom\s+(.+?)\s+to\s+(.+?)(?:[.!?]|$)', instruction or '', re.IGNORECASE)
+    if not match:
+        return '', ''
+    return _clean_route_place(match.group(1)), _clean_route_place(match.group(2))
+
+
+def _network_builder_for(builder_or_agent):
+    builder = getattr(builder_or_agent, 'builder', builder_or_agent)
+    return getattr(getattr(getattr(builder, 'env', None), 'router', None), 'network_builder', None)
+
+
+def _set_online_transit(builder_or_agent, enabled: bool) -> None:
+    network_builder = _network_builder_for(builder_or_agent)
+    if hasattr(network_builder, 'use_online'):
+        network_builder.use_online = enabled
 
 
 def _geometry_action(points: list[tuple[float, float]], idx: int, mode: str) -> tuple[str, float]:
@@ -284,7 +310,32 @@ def create_app(model: str = DEFAULT_MODEL, offline: bool = False) -> Flask:
         if not instruction:
             return jsonify({'error': 'instruction required'}), 400
 
+        payload_origin = _clean_route_place(data.get('origin'))
+        payload_destination = _clean_route_place(data.get('destination'))
+        parsed_origin, parsed_destination = _parse_route_places(instruction)
+        direct_origin = payload_origin or parsed_origin
+        direct_destination = payload_destination or parsed_destination
+
+        def build_payload(origin: str, destination: str) -> dict:
+            network_builder = _network_builder_for(builder)
+            restore_online = getattr(network_builder, 'use_online', None)
+            if restore_online is not None and data.get('online_transit', False) is False:
+                network_builder.use_online = False
+            try:
+                plan = builder.build(origin, destination, instruction=instruction)
+            finally:
+                if restore_online is not None:
+                    network_builder.use_online = restore_online
+            app.config['last_plan'] = plan
+            payload = plan.to_dict()
+            payload['status'] = 'ok'
+            payload['route_geometry'] = plan.path_for_selections()
+            return payload
+
         try:
+            if direct_origin and direct_destination:
+                return jsonify(build_payload(direct_origin, direct_destination))
+
             result = clarifier.analyze(instruction)
             if not result.is_clear:
                 return jsonify({
@@ -295,16 +346,7 @@ def create_app(model: str = DEFAULT_MODEL, offline: bool = False) -> Flask:
                     ],
                 })
 
-            plan = builder.build(
-                result.resolved_origin,
-                result.resolved_destination,
-                instruction=instruction,
-            )
-            app.config['last_plan'] = plan
-            payload = plan.to_dict()
-            payload['status'] = 'ok'
-            payload['route_geometry'] = plan.path_for_selections()
-            return jsonify(payload)
+            return jsonify(build_payload(result.resolved_origin, result.resolved_destination))
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
@@ -560,6 +602,7 @@ def create_app(model: str = DEFAULT_MODEL, offline: bool = False) -> Flask:
                 rule_based=bool(data.get('rule_based', True)),
                 streetview=bool(data.get('streetview', True)),
             )
+            _set_online_transit(agent, bool(data.get('online_transit', False)))
             prep = agent.prepare(
                 instruction, data.get('selections'),
                 origin=result.resolved_origin,
@@ -587,6 +630,7 @@ def create_app(model: str = DEFAULT_MODEL, offline: bool = False) -> Flask:
                 rule_based=bool(data.get('rule_based', True)),
                 streetview=bool(data.get('streetview', True)),
             )
+            _set_online_transit(agent, bool(data.get('online_transit', False)))
             prep = agent.prepare(
                 instruction, data.get('selections'),
                 origin=data.get('origin'), destination=data.get('destination'),
@@ -641,6 +685,7 @@ def create_app(model: str = DEFAULT_MODEL, offline: bool = False) -> Flask:
                 model=model, use_online_maps=not offline, rule_based=rule_based,
                 streetview=bool(data.get('streetview', True)),
             )
+            _set_online_transit(agent, bool(data.get('online_transit', False)))
             prep = agent.prepare(
                 instruction, data.get('selections'),
                 origin=data.get('origin'), destination=data.get('destination'),

@@ -1,14 +1,32 @@
 \begin{thebibliography}{20}
 \providecommand{\natexlab}[1]{#1}
 
-\bibitem[{Anderson et~al.(2018)Anderson, Wu, Teney, Bruce, Johnson,
-  Sünderhauf, Reid, Gould, and van~den Hengel}]{Anderson_2018_CVPR}
-Peter Anderson, Qi~Wu, Damien Teney, Jake Bruce, Mark Johnson, Niko
-  Sünderhauf, Ian Reid, Stephen Gould, and Anton van~den Hengel. 2018.
-\newblock Vision-and-language navigation: Interpreting visually-grounded
-  navigation instructions in real environments.
-\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
-  Pattern Recognition (CVPR)}.
+\bibitem[{Abdin et~al.(2024)Abdin, Ade~Jacobs, Awan, Aneja, Awadallah,
+  Hassan~Awadalla, Bach, Bahree, Bakhtiari, Behl, Benhaim, Bilenko, Bjorck,
+  Bubeck, Cai, Mendes, Chen, Chaudhary, Chopra, Giorno, de~Rosa, Dixon, Eldan,
+  Iter, Goswami, Gunasekar, Haider, Hao, Hewett, Huynh, Javaheripi, Jin,
+  Kauffmann, Karampatziakis, Kim, Khademi, Kurilenko, Lee, Lee, Li, Liang, Liu,
+  Lin, Lin, Madan, Mitra, Modi, Nguyen, Norick, Patra, Perez-Becker, Portet,
+  Pryzant, Qin, Radmilac, Rosset, Roy, Saarikivi, Saied, Salim, Santacroce,
+  Shah, Shang, Sharma, Song, Ruwase, Wang, Ward, Wang, Witte, Wyatt, Xu, Xu,
+  Xu, Yadav, Yang, Yang, Yu, Zhang, Zhang, Zhang, Zhang, Zhang, Zhang, and
+  Zhou}]{abdin2024phi-}
+Marah~I Abdin, Sam Ade~Jacobs, Ammar~Ahmad Awan, Jyoti Aneja, Ahmed Awadallah,
+  Hany Hassan~Awadalla, Nguyen Bach, Amit Bahree, Arash Bakhtiari, Harkirat
+  Behl, Alon Benhaim, Misha Bilenko, Johan Bjorck, Sébastien Bubeck, Martin
+  Cai, Caio César~Teodoro Mendes, Weizhu Chen, Vishrav Chaudhary, Parul
+  Chopra, and 66 others. 2024.
+\newblock \href
+  {https://www.microsoft.com/en-us/research/publication/phi-3-technical-report-a-highly-capable-language-model-locally-on-your-phone/}
+  {Phi-3 technical report: A highly capable language model locally on your
+  phone}.
+\newblock Technical Report MSR-TR-2024-12, Microsoft.
+
+\bibitem[{{Anthropic}(2026)}]{anthropic_sonnet46_2026}
+{Anthropic}. 2026.
+\newblock \href {https://www.anthropic.com/news/claude-sonnet-4-6}
+  {{Introducing Claude Sonnet 4.6}}.
+\newblock [Online; accessed 11-July-2026].
 
 \bibitem[{Bast et~al.(2016)Bast, Delling, Goldberg, Müller-Hannemann, Pajor,
   Sanders, Wagner, and Werneck}]{bast-etal-2016-route-planning}
@@ -34,13 +52,27 @@ Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared~D Kaplan, Prafulla
 \newblock In \emph{Advances in Neural Information Processing Systems},
   volume~33, pages 1877--1901. Curran Associates, Inc.
 
-\bibitem[{Chen et~al.(2019)Chen, Suhr, Misra, Snavely, and
-  Artzi}]{Chen_2019_CVPR}
-Howard Chen, Alane Suhr, Dipendra Misra, Noah Snavely, and Yoav Artzi. 2019.
-\newblock Touchdown: Natural language navigation and spatial reasoning in
-  visual street environments.
-\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
-  and Pattern Recognition (CVPR)}.
+\bibitem[{Devlin et~al.(2019)Devlin, Chang, Lee, and
+  Toutanova}]{devlin-etal-2019-bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019.
+\newblock \href {https://doi.org/10.18653/v1/N19-1423} {{BERT}: Pre-training of
+  deep bidirectional transformers for language understanding}.
+\newblock In \emph{Proceedings of the 2019 Conference of the North {A}merican
+  Chapter of the Association for Computational Linguistics: Human Language
+  Technologies, Volume 1 (Long and Short Papers)}, pages 4171--4186,
+  Minneapolis, Minnesota. Association for Computational Linguistics.
+
+\bibitem[{{dslim}(2026)}]{huggingface_dslim_bert_ner_2026}
+{dslim}. 2026.
+\newblock \href {https://huggingface.co/dslim/bert-base-NER} {{bert-base-NER}
+  model card}.
+\newblock [Online; accessed 11-July-2026].
+
+\bibitem[{{Google}(2026)}]{google_gemini_models_2026}
+{Google}. 2026.
+\newblock \href {https://ai.google.dev/gemini-api/docs/models} {{Models |
+  Gemini API | Google AI for Developers}}.
+\newblock [Online; accessed 11-July-2026].
 
 \bibitem[{Haklay and Weber(2008)}]{Haklay_2008}
 M.~Haklay and P.~Weber. 2008.
@@ -56,16 +88,16 @@ Charles~T. Hemphill, John~J. Godfrey, and George~R. Doddington. 1990.
 \newblock In \emph{Speech and Natural Language: Proceedings of a Workshop Held
   at Hidden Valley, {P}ennsylvania, June 24-27,1990}.
 
-\bibitem[{Ilharco et~al.(2019)Ilharco, Jain, Ku, Ie, and
-  Baldridge}]{ilharco-etal-2019-ndtw}
-Gabriel Ilharco, Vihan Jain, Alexander Ku, Eugene Ie, and Jason Baldridge.
-  2019.
-\newblock \href
-  {https://research.google/pubs/general-evaluation-for-instruction-conditioned-navigation-using-dynamic-time-warping/}
-  {General evaluation for instruction conditioned navigation using {Dynamic
-  Time Warping}}.
-\newblock In \emph{NeurIPS Visually Grounded Interaction and Language (ViGIL)
-  Workshop}.
+\bibitem[{Jiang et~al.(2023)Jiang, Sablayrolles, Mensch, Bamford, Chaplot,
+  de~Las~Casas, Bressand, Lengyel, Lample, Saulnier, Lavaud, Lachaux, Stock,
+  Scao, Lavril, Wang, Lacroix, and Sayed}]{jiang2023mistral7b}
+Albert~Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford,
+  Devendra~Singh Chaplot, Diego de~Las~Casas, Florian Bressand, Gianna Lengyel,
+  Guillaume Lample, Lucile Saulnier, L{\'{e}}lio~Renard Lavaud, Marie{-}Anne
+  Lachaux, Pierre Stock, Teven~Le Scao, Thibaut Lavril, Thomas Wang,
+  Timoth{\'{e}}e Lacroix, and William~El Sayed. 2023.
+\newblock \href {https://doi.org/10.48550/ARXIV.2310.06825} {Mistral 7b}.
+\newblock \emph{CoRR}, abs/2310.06825.
 
 \bibitem[{Luxen and Vetter(2011)}]{luxen-vetter-2011}
 Dennis Luxen and Christian Vetter. 2011.
@@ -80,6 +112,12 @@ Dennis Luxen and Christian Vetter. 2011.
 \newblock \href {https://nominatim.org/release-docs/latest/} {{{Nominatim}
   5.3.2 Manual}}.
 \newblock [Online; accessed 8-July-2026].
+
+\bibitem[{{OpenAI}(2026)}]{openai_models_2026}
+{OpenAI}. 2026.
+\newblock \href {https://developers.openai.com/api/docs/models/all} {{Models --
+  OpenAI API}}.
+\newblock [Online; accessed 11-July-2026].
 
 \bibitem[{{OpenFlights}(2026)}]{openflights_data_2026}
 {OpenFlights}. 2026.
@@ -105,26 +143,6 @@ Md~Imbesat Rizvi, Xiaodan Zhu, and Iryna Gurevych. 2024.
   for Computational Linguistics (Volume 1: Long Papers)}, pages 4750--4767,
   Bangkok, Thailand. Association for Computational Linguistics.
 
-\bibitem[{Schick et~al.(2023)Schick, Dwivedi-Yu, Dessi, Raileanu, Lomeli,
-  Hambro, Zettlemoyer, Cancedda, and Scialom}]{NEURIPS2023_d842425e}
-Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli,
-  Eric Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom. 2023.
-\newblock \href
-  {https://proceedings.neurips.cc/paper_files/paper/2023/file/d842425e4bf79ba039352da0f658a906-Paper-Conference.pdf}
-  {{Toolformer}: Language models can teach themselves to use tools}.
-\newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~36, pages 68539--68551. Curran Associates, Inc.
-
-\bibitem[{Schumann et~al.(2024)Schumann, Zhu, Feng, Fu, Riezler, and
-  Wang}]{Schumann_2024}
-Raphael Schumann, Wanrong Zhu, Weixi Feng, Tsu-Jui Fu, Stefan Riezler, and
-  William~Yang Wang. 2024.
-\newblock \href {https://doi.org/10.1609/aaai.v38i17.29858} {{VELMA}:
-  Verbalization embodiment of {LLM} agents for vision and language navigation
-  in street view}.
-\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
-  38(17):18924--18933.
-
 \bibitem[{Wei et~al.(2022)Wei, Wang, Schuurmans, Bosma, ichter, Xia, Chi, Le,
   and Zhou}]{NEURIPS2022_9d560961}
 Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, brian ichter, Fei Xia,
@@ -134,13 +152,6 @@ Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, brian ichter, Fei Xia,
   {Chain-of-thought prompting elicits reasoning in large language models}.
 \newblock In \emph{Advances in Neural Information Processing Systems},
   volume~35, pages 24824--24837. Curran Associates, Inc.
-
-\bibitem[{Wiki(2026)}]{openstreetmap_wiki_overpass_2026}
-OpenStreetMap Wiki. 2026.
-\newblock \href
-  {https://wiki.openstreetmap.org/w/index.php?title=Overpass_API\&oldid=3049229}
-  {{Overpass API} --- {OpenStreetMap} wiki{,}}.
-\newblock [Online; accessed 23-June-2026].
 
 \bibitem[{Xie et~al.(2024)Xie, Zhang, Chen, Zhu, Lou, Tian, Xiao, and
   Su}]{pmlr-v235-xie24j}
@@ -153,21 +164,17 @@ Jian Xie, Kai Zhang, Jiangjie Chen, Tinghui Zhu, Renze Lou, Yuandong Tian,
   Learning}, volume 235 of \emph{Proceedings of Machine Learning Research},
   pages 54590--54613. PMLR.
 
-\bibitem[{Xu et~al.(2025)Xu, Pan, Liu, and Wang}]{Xu_2025}
-Yunzhe Xu, Yiyuan Pan, Zhe Liu, and Hesheng Wang. 2025.
-\newblock \href {https://doi.org/10.1609/aaai.v39i9.32974} {{FLAME}: Learning
-  to navigate with multimodal {LLM} in urban environments}.
-\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
-  39(9):9005--9013.
-
-\bibitem[{Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and
-  Cao}]{yao2023react}
-Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik~R Narasimhan,
-  and Yuan Cao. 2023.
-\newblock \href {https://openreview.net/forum?id=WE_vluYUL-X} {{ReAct}:
-  Synergizing reasoning and acting in language models}.
-\newblock In \emph{The Eleventh International Conference on Learning
-  Representations}.
+\bibitem[{Yang et~al.(2024)Yang, Yang, Zhang, Hui, Zheng, Yu, Li, Liu, Huang,
+  Wei, Lin, Yang, Tu, Zhang, Yang, Yang, Zhou, Lin, Dang, Lu, Bao, Yang, Yu,
+  Li, Xue, Zhang, Zhu, Men, Lin, Li, Xia, Ren, Ren, Fan, Su, Zhang, Wan, Liu,
+  Cui, Zhang, and Qiu}]{yang2024qwen25technicalreport}
+An~Yang, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen Yu,
+  Chengyuan Li, Dayiheng Liu, Fei Huang, Haoran Wei, Huan Lin, Jian Yang,
+  Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxi Yang, Jingren Zhou, Junyang
+  Lin, Kai Dang, and 22 others. 2024.
+\newblock \href {https://doi.org/10.48550/ARXIV.2412.15115} {Qwen2.5 technical
+  report}.
+\newblock \emph{CoRR}, abs/2412.15115.
 
 \bibitem[{Ye et~al.(2022)Ye, Manotumruksa, and Yilmaz}]{ye-etal-2022-multiwoz}
 Fanghua Ye, Jarana Manotumruksa, and Emine Yilmaz. 2022.

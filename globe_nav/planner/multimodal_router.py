@@ -54,9 +54,9 @@ class MultimodalRouter:
     MAX_EXPLORE = 5000
     MAX_GRAPH_STOPS = 80
 
-    def __init__(self, osrm: OSRMClient, cache_dir: str = 'data/cache'):
+    def __init__(self, osrm: OSRMClient, cache_dir: str = 'data/cache', use_online: bool = True):
         self.osrm = osrm
-        self.network_builder = TransitNetworkBuilder(cache_dir)
+        self.network_builder = TransitNetworkBuilder(cache_dir, use_online=use_online)
 
     def find_top_options(
         self,

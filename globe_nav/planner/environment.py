@@ -27,7 +27,7 @@ class MobilityEnvironment:
         self.osrm = OSRMClient(cache_dir)
         self.flights = FlightGraph()
         self.transit = TransitFinder(cache_dir)
-        self.router = MultimodalRouter(self.osrm, cache_dir)
+        self.router = MultimodalRouter(self.osrm, cache_dir, use_online=use_online)
 
     def geocode(self, query: str) -> Optional[Waypoint]:
         return self.geocoder.geocode(query)

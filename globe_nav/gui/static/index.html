@@ -1,54 +1,145 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GLOBALNAV — 分段行程规划</title>
+  <title>GLOBALNAV — Multi-Modal Route Demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav style="padding:0.5rem 2rem;display:flex;gap:1rem">
-    <a href="/follower" style="color:#3b82f6">Instruction Follower →</a>
-    <a href="/annotate" style="color:#3b82f6">Annotation Tool →</a>
-  </nav>
-  <header>
-    <h1>GLOBALNAV</h1>
-    <p class="subtitle">分段模块化行程规划 · 环境决定交通方式 · LLM 仅解析意图</p>
-  </header>
+  <div class="planner-shell">
+    <header class="app-topbar">
+      <a class="brand" href="/" aria-label="GLOBALNAV home">GLOBAL<span>NAV</span></a>
+      <nav class="top-links" aria-label="Demo navigation">
+        <a href="/follower">Follower</a>
+        <a href="/annotate">Annotation</a>
+        <a href="/bench">Bench</a>
+      </nav>
+      <div class="top-actions" aria-label="Demo controls">
+        <button type="button" class="icon-button" title="Help"><i data-lucide="circle-help"></i></button>
+        <button type="button" class="icon-button" title="Settings"><i data-lucide="settings"></i></button>
+        <button type="button" class="icon-button" title="Profile"><i data-lucide="circle-user-round"></i></button>
+      </div>
+    </header>
 
-  <section class="search-panel">
-    <div class="search-row">
+    <section class="summary-bar" aria-label="Route summary">
+      <div class="endpoint-card">
+        <span class="summary-label">Origin</span>
+        <div class="endpoint-value">
+          <i class="pin pin-origin" data-lucide="map-pin"></i>
+          <strong id="originValue">New York, NY, USA</strong>
+        </div>
+      </div>
+
+      <button id="swapBtn" type="button" class="swap-button" title="Swap origin and destination">
+        <i data-lucide="arrow-left-right"></i>
+      </button>
+
+      <div class="endpoint-card">
+        <span class="summary-label">Destination</span>
+        <div class="endpoint-value">
+          <i class="pin pin-destination" data-lucide="map-pin"></i>
+          <strong id="destinationValue">Heathrow Airport (LHR), London, UK</strong>
+        </div>
+      </div>
+
+      <div class="route-preferences">
+        <span class="summary-label">Route Options</span>
+        <div class="mode-pills" aria-label="Preferred modes">
+          <button type="button" class="mode-pill active" data-mode="walk"><i data-lucide="footprints"></i>Walk</button>
+          <button type="button" class="mode-pill active" data-mode="drive"><i data-lucide="car-front"></i>Drive</button>
+          <button type="button" class="mode-pill active" data-mode="fly"><i data-lucide="plane"></i>Flight</button>
+          <button type="button" class="mode-pill active" data-mode="maritime"><i data-lucide="ship"></i>Ferry</button>
+          <button type="button" class="mode-pill active" data-mode="transit"><i data-lucide="train-front"></i>Transit</button>
+        </div>
+      </div>
+
+      <div class="total-card">
+        <div>
+          <span class="summary-label">Total Time</span>
+          <strong id="totalTime">--:--</strong>
+        </div>
+        <div>
+          <span class="summary-label">Total Distance</span>
+          <strong id="totalKm">-- --</strong>
+        </div>
+      </div>
+    </section>
+
+    <main class="demo-stage">
+      <aside class="segments-panel">
+        <div class="panel-heading">
+          <span>Segments</span>
+          <small id="segmentHint">No route yet</small>
+        </div>
+        <div id="segments" class="segment-list empty">Plan a route to review collapsible segment options.</div>
+      </aside>
+
+      <section class="map-panel">
+        <div id="map" class="map-container"></div>
+        <button type="button" class="map-tool" title="Center route"><i data-lucide="crosshair"></i></button>
+      </section>
+
+      <aside class="follower-panel">
+        <div class="panel-heading follower-title">
+          <span>Follower State</span>
+          <small id="playbackStatus">Not prepared</small>
+        </div>
+
+        <div class="observation-block">
+          <span class="summary-label">Current Observation</span>
+          <div class="streetview-frame">
+            <img id="svImage" alt="street view" />
+            <div id="svPlaceholder" class="streetview-placeholder">
+              <span>Street View</span>
+              <p>Prepare playback to show the current route view.</p>
+            </div>
+          </div>
+          <div id="svDots" class="sv-dots" aria-label="Playback frame position"></div>
+          <div id="obsSummary" class="observation-summary"></div>
+        </div>
+
+        <div class="actions-block">
+          <h2>Available Actions</h2>
+          <div id="actionList" class="action-list">
+            <button type="button" disabled><i data-lucide="route"></i>Prepare playback</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <section class="playback-dock" aria-label="Route playback">
+      <button id="playBtn" type="button" class="play-button" title="Play selected route"><i data-lucide="play"></i></button>
+      <button id="resetPlaybackBtn" type="button" class="dock-button" title="Reset playback"><i data-lucide="skip-back"></i></button>
+      <div id="timeline" class="timeline empty">Plan a route to see the playback timeline.</div>
+      <button id="speedBtn" type="button" class="dock-button">1x</button>
+      <button id="fitBtn" type="button" class="dock-button" title="Fit route"><i data-lucide="maximize"></i></button>
+    </section>
+
+    <section class="prompt-dock" aria-label="Trip request">
+      <i data-lucide="message-circle"></i>
       <input id="instruction" type="text"
-        placeholder="例如：我在UTS，要去四川九寨沟"
-        value="我在UTS，要去四川九寨沟" />
-      <button id="planBtn" type="button">规划行程</button>
-    </div>
-    <p id="status" class="status"></p>
-  </section>
+        value="Plan a route from New York, NY, USA to Heathrow Airport (LHR), London, UK."
+        placeholder="Ask for clarification or enter a new route request" />
+      <button id="planBtn" type="button" title="Plan route"><i data-lucide="send"></i></button>
+      <p id="status" class="status-text" aria-live="polite"></p>
+    </section>
+  </div>
 
-  <section id="summary" class="summary hidden">
-    <div class="route-header">
-      <span id="routeLabel"></span>
-    </div>
-    <div class="total-bar">
-      <span class="total-label">预计总耗时</span>
-      <span id="totalTime" class="total-time">—</span>
-      <span id="totalKm" class="total-km"></span>
-    </div>
-  </section>
-
-  <main id="segments"></main>
-
-  <div id="clarifyModal" class="modal hidden">
-    <div class="modal-box">
-      <h3>需要确认</h3>
-      <p id="clarifyQuestion"></p>
-      <div id="clarifyOptions"></div>
-      <input id="clarifyInput" type="text" class="hidden" placeholder="请输入..." />
-      <button id="clarifySubmit">确认</button>
+  <div id="clarifyModal" class="clarify-modal hidden">
+    <div class="clarify-box">
+      <p class="eyebrow">Clarification</p>
+      <h2>Clarification Needed</h2>
+      <p id="clarifyQuestion" class="clarify-question"></p>
+      <div id="clarifyOptions" class="clarify-options"></div>
+      <input id="clarifyInput" type="text" class="hidden" placeholder="Enter your answer" />
+      <button id="clarifySubmit" type="button">Confirm</button>
     </div>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="app.js"></script>
 </body>
 </html>

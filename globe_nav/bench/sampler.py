@@ -628,9 +628,9 @@ class GlobNavBenchSampler:
         o = origin.label.lower().replace('_', ' ')
         d = dest.label.lower().replace('_', ' ')
         if language == 'zh':
-            return f'我在{o}门口，面朝主路。我想去{d}，请帮我规划完整路线。'
+            return f'I am at the entrance of {o}, facing the main road. I want to go to {d}; please plan the complete route.'
         if language == 'mixed':
-            return f'我现在在{o}, facing the main road, and I need to reach {d}.'
+            return f'I am currently at {o}, facing the main road, and I need to reach {d}.'
         return f'I am outside {o}, facing the main road, and I need to reach {d}.'
 
 

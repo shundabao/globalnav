@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
 <body>
   <div class="app-shell">
     <nav class="topbar">
-      <a href="/">分段规划</a>
+      <a href="/">Planner</a>
       <a href="/follower">Follower</a>
       <a href="/bench">Bench Review</a>
       <span>GLOBALNAV Annotation</span>
@@ -20,7 +20,7 @@
       <div>
         <p class="eyebrow">Route-grounded instruction dataset</p>
         <h1>Instruction Annotation</h1>
-        <p class="subtitle">先固定环境路线，再逐节点写可选指令；空指令表示继续沿路线前进。</p>
+        <p class="subtitle">Lock an environment route, then write optional node-level instructions. Leave a node blank to continue along the route.</p>
       </div>
       <div class="status-card">
         <span>Street View</span>
@@ -49,10 +49,10 @@
       </div>
 
       <div class="control-row">
-        <label class="check"><input id="groundOnlyInput" type="checkbox" checked /> 只标注 walk/drive 街景节点</label>
-        <button id="randomBtn" type="button">随机本地起终点</button>
-        <button id="planBtn" type="button">生成路线选项</button>
-        <button id="startBtn" type="button" disabled>固定路线并开始标注</button>
+        <label class="check"><input id="groundOnlyInput" type="checkbox" checked /> Annotate only walk/drive Street View nodes</label>
+        <button id="randomBtn" type="button">Random local endpoints</button>
+        <button id="planBtn" type="button">Generate Route Options</button>
+        <button id="startBtn" type="button" disabled>Lock Route and Start Annotation</button>
         <span id="setupStatus" class="status-text"></span>
       </div>
     </section>
@@ -63,7 +63,7 @@
           <span>Route Options</span>
           <small id="routeSummary">No route yet</small>
         </div>
-        <div id="segmentList" class="segment-list empty">生成路线后选择每一段的 ground truth option。</div>
+        <div id="segmentList" class="segment-list empty">Generate a route, then choose the ground-truth option for each segment.</div>
       </aside>
 
       <section class="map-panel">
@@ -80,7 +80,7 @@
           <img id="streetviewImage" alt="street view" />
           <div id="streetviewPlaceholder" class="streetview-placeholder">
             <span>Street View</span>
-            <p>固定路线后显示当前节点街景</p>
+            <p>Street View for the current node appears after the route is locked.</p>
           </div>
         </div>
 
@@ -88,7 +88,7 @@
 
         <label class="instruction-box">
           <span>Instruction at this node</span>
-          <textarea id="instructionInput" rows="5" placeholder="可留空：表示继续沿当前路线前进"></textarea>
+          <textarea id="instructionInput" rows="5" placeholder="Optional: leave blank to continue along the current route"></textarea>
         </label>
 
         <label class="action-box">
@@ -97,9 +97,9 @@
         </label>
 
         <div class="nav-row">
-          <button id="prevNodeBtn" type="button">上一点</button>
-          <button id="nextNodeBtn" type="button">下一点</button>
-          <button id="saveBtn" type="button">保存 JSONL</button>
+          <button id="prevNodeBtn" type="button">Previous Node</button>
+          <button id="nextNodeBtn" type="button">Next Node</button>
+          <button id="saveBtn" type="button">Save JSONL</button>
         </div>
         <p id="saveStatus" class="status-text"></p>
       </aside>
@@ -110,7 +110,7 @@
         <span>Nodes</span>
         <small id="progressText">0 annotated</small>
       </div>
-      <div id="nodeList" class="node-list empty">开始标注后这里会显示路线节点。</div>
+      <div id="nodeList" class="node-list empty">Route nodes will appear here after annotation starts.</div>
     </section>
   </div>
 

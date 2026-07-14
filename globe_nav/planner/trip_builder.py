@@ -21,9 +21,9 @@ class ModularTripBuilder:
         origin = self._geocode_resilient(origin_name)
         dest = self._geocode_resilient(dest_name)
         if not origin:
-            raise ValueError(f'无法定位起点: {origin_name!r}')
+            raise ValueError(f'Could not geocode origin: {origin_name!r}')
         if not dest:
-            raise ValueError(f'无法定位终点: {dest_name!r}')
+            raise ValueError(f'Could not geocode destination: {dest_name!r}')
 
         dist = haversine_km(origin.lat, origin.lon, dest.lat, dest.lon)
         if dist < 80:
@@ -55,16 +55,17 @@ class ModularTripBuilder:
     ) -> list[TripSegment]:
         self.env.flights.ensure_loaded()
         dep_airports = self.env.flights.nearest_commercial_airports(
-            origin.lat, origin.lon, n=1, max_km=80,
+            origin.lat, origin.lon, n=3, max_km=80,
         )
         arr_airports = self.env.flights.nearest_commercial_airports(
             dest.lat, dest.lon, n=3, max_km=250,
         )
+        dep_airports = self._prefer_departure_airports(origin, instruction, dep_airports)
         arr_airports = self._prefer_airports_from_instruction(instruction, arr_airports)
         if not dep_airports:
-            return [self._local_segment('seg_1', origin, dest, '全程（无可用出发机场）')]
+            return [self._local_segment('seg_1', origin, dest, 'Full route (no available departure airport)')]
         if not arr_airports:
-            return [self._local_segment('seg_1', origin, dest, '全程（无可用到达机场）')]
+            return [self._local_segment('seg_1', origin, dest, 'Full route (no available arrival airport)')]
 
         dep_ap, arr_ap = self._best_airport_pair(dep_airports, arr_airports)
         dep_label = f'{dep_ap.name} ({dep_ap.iata})'
@@ -115,6 +116,27 @@ class ModularTripBuilder:
                 seen.add(ap.iata)
         return ordered or airports
 
+    def _prefer_departure_airports(self, origin: Waypoint, instruction: str, airports: list):
+        text = f'{origin.name} {instruction}'.lower()
+        prefs = []
+        if 'jfk' in text or 'john f kennedy' in text or 'new york' in text:
+            prefs.append('JFK')
+        if not prefs:
+            return airports
+        self.env.flights.ensure_loaded()
+        ordered = []
+        seen = set()
+        for iata in prefs:
+            ap = self.env.flights.airports.get(iata)
+            if ap and ap.iata not in seen and any(candidate.iata == ap.iata for candidate in airports):
+                ordered.append(ap)
+                seen.add(ap.iata)
+        for ap in airports:
+            if ap.iata not in seen:
+                ordered.append(ap)
+                seen.add(ap.iata)
+        return ordered or airports
+
     def _best_airport_pair(self, dep_list, arr_list):
         best = None
         for dep in dep_list[:2]:
@@ -150,25 +172,25 @@ class ModularTripBuilder:
                     continue
                 seen.add(chain_key)
                 legs = self.env.flights.build_flight_legs(path, estimated=estimated)
-                stops = '直飞' if len(path) == 2 else f'{len(path) - 2} 次经停'
+                stops = 'direct' if len(path) == 2 else f'{len(path) - 2} stop(s)'
                 dur = sum(l.duration_min for l in legs)
                 dist = sum(l.distance_km for l in legs)
-                tag = '（估计）' if estimated else ''
+                tag = ' (estimated)' if estimated else ''
                 options.append(SegmentOption(
                     option_id=f'seg_flight_{arr_ap.iata}_{i}',
-                    label=f'航班 {" → ".join(path)} ({stops}){tag}',
+                    label=f'Flight {" → ".join(path)} ({stops}){tag}',
                     mode_chain='fly',
                     micro_legs=[MicroLeg.from_detailed(l) for l in legs],
                     duration_min=dur,
                     distance_km=dist,
                     verified=not estimated,
-                    tooltip=f'{stops} · {dur/60:.1f}h · 到达 {arr_ap.iata}',
+                    tooltip=f'{stops} · {dur/60:.1f}h · arrives at {arr_ap.iata}',
                 ))
 
         if not options:
             options.append(SegmentOption(
                 option_id='seg_flight_estimated',
-                label=f'航班（估计）{dep_iata} → 目的地附近机场',
+                label=f'Estimated flight {dep_iata} → airport near destination',
                 mode_chain='fly',
                 micro_legs=[MicroLeg(
                     mode='fly',
@@ -181,7 +203,7 @@ class ModularTripBuilder:
                 duration_min=0,
                 distance_km=0,
                 verified=False,
-                tooltip='未找到航线，请检查目的地',
+                tooltip='No route found; check the destination',
             ))
 
         options.sort(key=lambda o: o.duration_min if o.duration_min > 0 else 1e9)
@@ -192,7 +214,7 @@ class ModularTripBuilder:
             from_name=dep_label,
             to_name='…',
             options=options,
-            description='航班段：OpenFlights 连通性 + 枢纽估计备选',
+            description='Flight segment: OpenFlights connectivity plus hub-estimated fallbacks',
         )
 
     def _local_segment(self, seg_id: str, a: Waypoint, b: Waypoint, title: str) -> TripSegment:
@@ -230,12 +252,18 @@ class ModularTripBuilder:
             from_name=a.name,
             to_name=b.name,
             options=options,
-            description='1 驾车 + Top-5 公交/步行（OSM 线路 + OSRM 图搜索）',
+            description='1 drive option plus top-5 transit/walk options (OSM routes + OSRM graph search)',
         )
 
     @staticmethod
     def _option_label(legs: list[DetailedLeg]) -> str:
-        names = {'walk': '步行', 'drive': '驾车', 'bus': '公交', 'train': '火车', 'tram': '轻轨'}
+        names = {
+            'walk': 'Walk',
+            'drive': 'Drive',
+            'bus': 'Bus',
+            'train': 'Train',
+            'tram': 'Tram',
+        }
         if len(legs) == 1:
             return names.get(legs[0].mode, legs[0].mode.title())
         return ' → '.join(names.get(l.mode, l.mode) for l in legs)

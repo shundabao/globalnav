@@ -57,14 +57,14 @@ class GlobalStreetViewProvider:
 
         if not self.enabled:
             self._probe_cache = {
-                'ok': False, 'reason': 'disabled', 'message': '街景已关闭',
+                'ok': False, 'reason': 'disabled', 'message': 'Street View is disabled',
             }
             return self._probe_cache
 
         if not self.configured:
             self._probe_cache = {
                 'ok': False, 'reason': 'no_key',
-                'message': '未配置 GOOGLE_MAPS_API_KEY 或 MAPILLARY_ACCESS_TOKEN',
+                'message': 'GOOGLE_MAPS_API_KEY or MAPILLARY_ACCESS_TOKEN is not configured',
             }
             return self._probe_cache
 
@@ -72,7 +72,7 @@ class GlobalStreetViewProvider:
             meta = self._google_metadata(_PROBE_LAT, _PROBE_LON)
             status = meta.get('status', '')
             if status == 'OK':
-                self._probe_cache = {'ok': True, 'source': 'google', 'message': 'Google Street View 可用'}
+                self._probe_cache = {'ok': True, 'source': 'google', 'message': 'Google Street View is available'}
                 return self._probe_cache
             if status in ('REQUEST_DENIED', 'ERROR'):
                 data = self._google_image(_PROBE_LAT, _PROBE_LON, 0)
@@ -80,14 +80,14 @@ class GlobalStreetViewProvider:
                     self._probe_cache = {
                         'ok': True,
                         'source': 'google-static',
-                        'message': 'Google Street View Static 图像接口可用',
+                        'message': 'Google Street View Static image API is available',
                         'detail': meta.get('error_message', ''),
                     }
                     return self._probe_cache
             if status == 'REQUEST_DENIED':
                 self._probe_cache = {
                     'ok': False, 'reason': 'api_not_enabled',
-                    'message': '请在 GCP 启用 Street View Static API 并使用 GOOGLE_MAPS_API_KEY',
+                    'message': 'Enable the Street View Static API in GCP and use GOOGLE_MAPS_API_KEY',
                     'detail': meta.get('error_message', ''),
                 }
                 return self._probe_cache
@@ -95,12 +95,12 @@ class GlobalStreetViewProvider:
         if self.mapillary_token:
             m = self._mapillary_nearest(_PROBE_LAT, _PROBE_LON)
             if m:
-                self._probe_cache = {'ok': True, 'source': 'mapillary', 'message': 'Mapillary 可用'}
+                self._probe_cache = {'ok': True, 'source': 'mapillary', 'message': 'Mapillary is available'}
                 return self._probe_cache
 
         self._probe_cache = {
             'ok': False, 'reason': 'no_coverage',
-            'message': '当前区域无街景覆盖或 API 不可用',
+            'message': 'No Street View coverage is available here, or the API is unavailable',
         }
         return self._probe_cache
 
@@ -117,10 +117,10 @@ class GlobalStreetViewProvider:
 
     def lookup(self, lat: float, lon: float, heading: float = 0.0) -> dict:
         if not self.enabled:
-            return {'available': False, 'reason': 'disabled', 'message': '街景已关闭'}
+            return {'available': False, 'reason': 'disabled', 'message': 'Street View is disabled'}
 
         if abs(lat) < 1e-6 and abs(lon) < 1e-6:
-            return {'available': False, 'reason': 'no_position', 'message': '无坐标'}
+            return {'available': False, 'reason': 'no_position', 'message': 'No coordinates available'}
 
         if self.google_key:
             meta = self._google_metadata(lat, lon)
@@ -167,7 +167,7 @@ class GlobalStreetViewProvider:
                     'message': 'Mapillary',
                 }
 
-        return {'available': False, 'reason': 'no_coverage', 'message': '此位置无街景'}
+        return {'available': False, 'reason': 'no_coverage', 'message': 'No Street View is available at this location'}
 
     def image_bytes(self, lat: float, lon: float, heading: float = 0.0) -> Optional[bytes]:
         if not self.enabled:

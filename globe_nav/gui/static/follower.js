@@ -117,7 +117,7 @@ function showStreetViewPlaceholder(message, detail = '') {
   if (!frame || !img || !placeholder) return;
   frame.classList.remove('has-image');
   img.removeAttribute('src');
-  const safeMessage = escapeHtml(message || '暂无街景');
+  const safeMessage = escapeHtml(message || 'No Street View available');
   const safeDetail = detail ? `<p>${escapeHtml(detail)}</p>` : '';
   placeholder.innerHTML = `<span>Street View</span><p>${safeMessage}</p>${safeDetail}`;
 }
@@ -128,9 +128,9 @@ function showStreetViewImage(url, alt) {
   const placeholder = $('svPlaceholder');
   if (!frame || !img || !placeholder) return;
   frame.classList.remove('has-image');
-  placeholder.innerHTML = '<span>Street View</span><p>正在加载街景图像…</p>';
+  placeholder.innerHTML = '<span>Street View</span><p>Loading Street View image...</p>';
   img.onload = () => frame.classList.add('has-image');
-  img.onerror = () => showStreetViewPlaceholder('街景图像加载失败', '请检查 Street View Static API 或当前位置覆盖情况');
+  img.onerror = () => showStreetViewPlaceholder('Street View image failed to load', 'Check the Street View Static API or local coverage.');
   img.alt = alt || 'Street view';
   img.src = `${url}&_=${Date.now()}`;
 }
@@ -192,28 +192,28 @@ function updateStreetView(obs) {
   }
 
   if (sv.reason === 'disabled') {
-    showStreetViewPlaceholder('街景已关闭', '勾选「街景图像」后重新准备路线');
-    meta.textContent = '街景已关闭（取消勾选「街景图像」）';
+    showStreetViewPlaceholder('Street View is disabled', 'Enable Street View images and prepare the route again.');
+    meta.textContent = 'Street View is disabled.';
   } else if (sv.reason === 'api_not_enabled' || sv.reason === 'no_key') {
-    showStreetViewPlaceholder('街景 API 未可用', sv.message || '请配置 GOOGLE_MAPS_API_KEY 或 MAPILLARY_ACCESS_TOKEN');
-    meta.textContent = sv.message || '未配置街景 API';
+    showStreetViewPlaceholder('Street View API is unavailable', sv.message || 'Configure GOOGLE_MAPS_API_KEY or MAPILLARY_ACCESS_TOKEN.');
+    meta.textContent = sv.message || 'Street View API is not configured.';
   } else if (sv.reason?.endsWith('_phase')) {
-    showStreetViewPlaceholder(`${obs.mode || '当前'} 阶段无街景`, `${obs.from || ''} → ${obs.to || ''}`);
+    showStreetViewPlaceholder(`No Street View for the ${obs.mode || 'current'} phase`, `${obs.from || ''} → ${obs.to || ''}`);
     meta.textContent = `✈ ${obs.from} → ${obs.to} · ${sv.message || sv.phase || obs.mode}`;
   } else if (sv.reason === 'no_coverage') {
-    showStreetViewPlaceholder('此位置无街景覆盖', `${obs.from || ''} → ${obs.to || ''}`);
-    meta.textContent = sv.message || '此位置无街景覆盖';
+    showStreetViewPlaceholder('No Street View coverage here', `${obs.from || ''} → ${obs.to || ''}`);
+    meta.textContent = sv.message || 'No Street View coverage here';
   } else {
-    showStreetViewPlaceholder(sv.message || '暂无街景');
-    meta.textContent = sv.message || '暂无街景';
+    showStreetViewPlaceholder(sv.message || 'No Street View available');
+    meta.textContent = sv.message || 'No Street View available';
   }
 }
 
 function streetviewStatusLine(status) {
-  if (!status) return '街景: 未知';
-  if (!status.enabled) return '街景: 已关闭';
-  if (!status.working) return `街景: ${status.message || '不可用'}`;
-  return `街景: ${status.source || '可用'}`;
+  if (!status) return 'Street View: unknown';
+  if (!status.enabled) return 'Street View: disabled';
+  if (!status.working) return `Street View: ${status.message || 'unavailable'}`;
+  return `Street View: ${status.source || 'available'}`;
 }
 
 function renderSegmentOptions(plan) {
@@ -246,7 +246,7 @@ function renderSegmentOptions(plan) {
       state.selections[segId] = optId;
       renderSegmentOptions(plan);
       if (!state.sessionId) return;
-      $('status').textContent = '更新路线选择…';
+      $('status').textContent = 'Updating route selection...';
       const res = await fetch('/api/follower/select', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -254,7 +254,7 @@ function renderSegmentOptions(plan) {
       });
       const data = await res.json();
       if (data.error) {
-        $('status').textContent = '错误: ' + data.error;
+        $('status').textContent = 'Error: ' + data.error;
         return;
       }
       state.plan = data.plan || state.plan;
@@ -265,7 +265,7 @@ function renderSegmentOptions(plan) {
       renderTrace();
       updateMarker(data.initial_observation);
       updateStreetView(data.initial_observation);
-      $('status').textContent = `路线已更新 · ${data.execution_legs} 执行段`;
+      $('status').textContent = `Route updated · ${data.execution_legs} execution legs`;
     };
   });
 }
@@ -273,7 +273,7 @@ function renderSegmentOptions(plan) {
 function renderTrace() {
   const trace = $('trace');
   if (!state.trajectory.length) {
-    trace.innerHTML = '<div class="trace-empty">尚无步骤 — 点击「单步」或「播放」</div>';
+    trace.innerHTML = '<div class="trace-empty">No steps yet — click Step or Play</div>';
     return;
   }
   trace.innerHTML = state.trajectory.map((t, i) => {
@@ -324,7 +324,7 @@ async function parseJsonResponse(res) {
     return JSON.parse(text);
   } catch {
     if (res.status === 405) {
-      throw new Error('服务器版本过旧，请重启: python scripts/run_gui.py --port 8765');
+      throw new Error('The server is out of date; restart it with: python scripts/run_gui.py --port 8765');
     }
     throw new Error(text.slice(0, 120) || `HTTP ${res.status}`);
   }
@@ -369,12 +369,12 @@ async function submitClarify(answer) {
 
 function handlePrepareResponse(data) {
   if (data.status === 'clarifying') {
-    $('status').textContent = '需要确认一项信息';
+    $('status').textContent = 'One clarification is required';
     showClarify(data.questions);
     return;
   }
   if (data.error) {
-    $('status').textContent = '错误: ' + data.error;
+    $('status').textContent = 'Error: ' + data.error;
     return;
   }
 
@@ -391,14 +391,14 @@ function handlePrepareResponse(data) {
   $('meta').classList.remove('hidden');
   $('meta').innerHTML = `
     <div class="route-header">${data.origin} → ${data.destination}</div>
-    <div class="meta-line">执行段: ${data.execution_legs} · ${streetviewStatusLine(data.streetview_status)}</div>
-    <details><summary>分解结果</summary><pre>${JSON.stringify(data.decomposed, null, 2)}</pre></details>`;
+    <div class="meta-line">Execution legs: ${data.execution_legs} · ${streetviewStatusLine(data.streetview_status)}</div>
+    <details><summary>Decomposition</summary><pre>${JSON.stringify(data.decomposed, null, 2)}</pre></details>`;
 
   $('playback').classList.remove('hidden');
   $('scrubber').max = 0;
   $('scrubber').value = 0;
   renderTrace();
-  $('status').textContent = '准备完成 — 可单步或播放';
+  $('status').textContent = 'Ready — step through or play the route';
 }
 
 async function prepare() {
@@ -409,10 +409,10 @@ async function prepare() {
   state.trajectory = [];
   state.stepIndex = 0;
   $('prepareBtn').disabled = true;
-  $('status').textContent = 'LLM 提取起终点 + 分解指令 + 构建环境路线…';
+  $('status').textContent = 'Extracting endpoints, decomposing the instruction, and building the route...';
   $('playback').classList.add('hidden');
   $('meta').classList.add('hidden');
-  showStreetViewPlaceholder('正在准备路线…', '街景会随当前位置更新');
+  showStreetViewPlaceholder('Preparing route...', 'Street View will update with the current position.');
   $('svMeta').textContent = '';
   renderObservationPanel(null);
 
@@ -424,7 +424,7 @@ async function prepare() {
     });
     handlePrepareResponse(await parseJsonResponse(res));
   } catch (e) {
-    $('status').textContent = '失败: ' + e.message;
+    $('status').textContent = 'Failed: ' + e.message;
   } finally {
     $('prepareBtn').disabled = false;
   }
@@ -441,7 +441,7 @@ async function stepOnce() {
     });
     const data = await res.json();
     if (data.error) {
-      $('status').textContent = '错误: ' + data.error;
+      $('status').textContent = 'Error: ' + data.error;
       return;
     }
     state.trajectory.push({
@@ -454,7 +454,7 @@ async function stepOnce() {
     $('scrubber').max = Math.max(0, state.trajectory.length - 1);
     renderTrace();
     if (data.done) {
-      $('status').textContent = `完成: success=${data.success}`;
+      $('status').textContent = `Done: success=${data.success}`;
       stopPlay();
     } else {
       $('status').textContent = `Step ${data.step}: ${data.action}`;
@@ -468,7 +468,7 @@ function stopPlay() {
   state.playing = false;
   if (state.playTimer) clearInterval(state.playTimer);
   state.playTimer = null;
-  $('playBtn').textContent = '▶ 播放';
+  $('playBtn').textContent = '▶ Play';
 }
 
 async function togglePlay() {
@@ -478,7 +478,7 @@ async function togglePlay() {
   }
   if (!state.sessionId) return;
   state.playing = true;
-  $('playBtn').textContent = '⏸ 暂停';
+  $('playBtn').textContent = '⏸ Pause';
   state.playTimer = setInterval(async () => {
     if (state.trajectory.length && state.trajectory[state.trajectory.length - 1].done) {
       stopPlay();
