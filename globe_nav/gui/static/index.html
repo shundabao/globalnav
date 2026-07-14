@@ -12,9 +12,7 @@
     <header class="app-topbar">
       <a class="brand" href="/" aria-label="GLOBALNAV home">GLOBAL<span>NAV</span></a>
       <nav class="top-links" aria-label="Demo navigation">
-        <a href="/follower">Follower</a>
         <a href="/annotate">Annotation</a>
-        <a href="/bench">Bench</a>
       </nav>
       <div class="top-actions" aria-label="Demo controls">
         <button type="button" class="icon-button" title="Help"><i data-lucide="circle-help"></i></button>
@@ -28,7 +26,7 @@
         <span class="summary-label">Origin</span>
         <div class="endpoint-value">
           <i class="pin pin-origin" data-lucide="map-pin"></i>
-          <strong id="originValue">New York, NY, USA</strong>
+          <strong id="originValue">City Hall, New York</strong>
         </div>
       </div>
 
@@ -40,7 +38,7 @@
         <span class="summary-label">Destination</span>
         <div class="endpoint-value">
           <i class="pin pin-destination" data-lucide="map-pin"></i>
-          <strong id="destinationValue">Heathrow Airport (LHR), London, UK</strong>
+          <strong id="destinationValue">University College London</strong>
         </div>
       </div>
 
@@ -120,7 +118,7 @@
     <section class="prompt-dock" aria-label="Trip request">
       <i data-lucide="message-circle"></i>
       <input id="instruction" type="text"
-        value="Plan a route from New York, NY, USA to Heathrow Airport (LHR), London, UK."
+        value="Plan a route from the City Hall in New York to University College London."
         placeholder="Ask for clarification or enter a new route request" />
       <button id="planBtn" type="button" title="Plan route"><i data-lucide="send"></i></button>
       <p id="status" class="status-text" aria-live="polite"></p>

@@ -254,8 +254,8 @@ function computeTotals() {
 
 function updateSummary() {
   const plan = state.tripPlan;
-  $('originValue').textContent = plan?.origin || 'New York, NY, USA';
-  $('destinationValue').textContent = plan?.destination || 'Heathrow Airport (LHR), London, UK';
+  $('originValue').textContent = plan?.origin || 'City Hall, New York';
+  $('destinationValue').textContent = plan?.destination || 'University College London';
   const { totalMin, totalKm, selectedCount } = computeTotals();
   $('totalTime').textContent = selectedCount ? formatDuration(totalMin) : '--:--';
   $('totalKm').textContent = selectedCount ? `${totalKm.toFixed(1)} km` : '-- --';

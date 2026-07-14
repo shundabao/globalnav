@@ -17,6 +17,7 @@ venv/
 /env/
 
 .DS_Store
+*.bak_*
 data/cache/
 data/evals/
 output/
